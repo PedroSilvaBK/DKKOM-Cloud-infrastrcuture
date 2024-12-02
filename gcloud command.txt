@@ -1,0 +1,72 @@
+gcloud compute routers create cluster-router --network default --region europe-west1
+
+gcloud compute routers nats create cluster-nat --router=cluster-router --auto-allocate-nat-external-ips --nat-all-subnet-ip-ranges --region europe-west1
+
+docker tag my-image europe-west1-docker.pkg.dev/d-com-437216/cluster-repo/my-image
+docker push europe-west1docker.pkg.dev/d-com-437216/cluster-repo/my-image
+
+
+
+gcloud beta container --project "d-com-437216" 
+clusters create "dcom-cluster" 
+--zone "europe-west1-b"
+ --tier "standard" 
+--no-enable-basic-auth 
+--cluster-version "1.31.1-gke.2105000" 
+--release-channel "rapid" 
+--machine-type "e2-medium" 
+--image-type "COS_CONTAINERD" 
+--disk-type "pd-balanced" 
+--disk-size "32" 
+--metadata disable-legacy-endpoints=true 
+--scopes "https://www.googleapis.com/auth/devstorage.read_only","https://www.googleapis.com/auth/logging.write","https://www.googleapis.com/auth/monitoring","https://www.googleapis.com/auth/servicecontrol","https://www.googleapis.com/auth/service.management.readonly","https://www.googleapis.com/auth/trace.append" 
+--num-nodes "3"
+ --enable-private-nodes
+ --enable-ip-alias
+ --network "projects/d-com-437216/global/networks/default"
+ --subnetwork "projects/d-com-437216/regions/europe-west1/subnetworks/default" 
+--no-enable-intra-node-visibility 
+--default-max-pods-per-node "110"
+ --enable-dns-access --enable-ip-access 
+--security-posture=standard
+ --workload-vulnerability-scanning=disabled 
+--no-enable-master-authorized-networks
+ --no-enable-google-cloud-access
+ --addons HorizontalPodAutoscaling,HttpLoadBalancing,GcePersistentDiskCsiDriver 
+--enable-autoupgrade 
+--enable-autorepair
+ --max-surge-upgrade 1
+ --max-unavailable-upgrade 0 
+--binauthz-evaluation-mode=DISABLED
+ --enable-managed-prometheus 
+--enable-shielded-nodes
+ --node-locations "europe-west1-b"
+
+helm install ingress-nginx ingress-nginx/ingress-nginx --namespace ingress-nginx --create-namespace
+
+kubectl create serviceaccount media-service-sa
+
+gcloud iam service-accounts add-iam-policy-binding your-service-account@d-com-437216.iam.gserviceaccount.com --member="serviceAccount:d-com-437216.svc.id.goog[default/media-service-sa]" --role="roles/secretmanager.secretAccessor"
+
+
+gcloud redis instances create --project=d-com-437216  redis --tier=basic --size=8 --region=europe-west1 --redis-version=redis_7_0 --network=projects/d-com-437216/global/networks/default --connect-mode=PRIVATE_SERVICE_ACCESS
+
+
+#gcloud container clusters update dcom-cluster --workload-pool=d-com-437216.svc.id.goog
+
+
+#kubectl annotate serviceaccount role-access --namespace default iam.gke.io/gcp-service-account=role-access@d-com-437216.iam.gserviceaccount.com
+
+//important command if I change accounts
+gcloud secrets add-iam-policy-binding service-principal-app --role=roles/secretmanager.secretAccessor --member=principal://iam.googleapis.com/projects/737764647544/locations/global/workloadIdentityPools/d-com-437216.svc.id.goog/subject/ns/default/sa/app-access
+
+
+enable the cluster work identity
+create serviec account and add the secret acessor role to it
+create kuebrnetes service account : "kubectl create serviceaccount app-access"
+
+bind kubernetes service account: "gcloud iam service-accounts add-iam-policy-binding app-access@d-com-437216.iam.gserviceaccount.com --member="serviceAccount:d-com-437216.svc.id.goog[default/app-access]" --role="roles/iam.workloadIdentityUser"
+kubectl annotate serviceaccount app-access --namespace default iam.gke.io/gcp-service-account=app-access@d-com-437216.iam.gserviceaccount.com annotaate the service account
+
+
+add the mention of the service account name to the deployment file

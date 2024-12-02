@@ -1,0 +1,241 @@
+---
+allowed:
+- IPProtocol: icmp
+creationTimestamp: '2024-09-30T09:28:20.926-07:00'
+description: Allow ICMP from anywhere
+direction: INGRESS
+disabled: false
+id: '8102018334512869195'
+kind: compute#firewall
+logConfig:
+  enable: false
+name: default-allow-icmp
+network: https://www.googleapis.com/compute/v1/projects/d-com-437216/global/networks/default
+priority: 65534
+selfLink: https://www.googleapis.com/compute/v1/projects/d-com-437216/global/firewalls/default-allow-icmp
+sourceRanges:
+- 0.0.0.0/0
+---
+allowed:
+- IPProtocol: tcp
+  ports:
+  - 0-65535
+- IPProtocol: udp
+  ports:
+  - 0-65535
+- IPProtocol: icmp
+creationTimestamp: '2024-09-30T09:28:20.845-07:00'
+description: Allow internal traffic on the default network
+direction: INGRESS
+disabled: false
+id: '6861687467974029131'
+kind: compute#firewall
+logConfig:
+  enable: false
+name: default-allow-internal
+network: https://www.googleapis.com/compute/v1/projects/d-com-437216/global/networks/default
+priority: 65534
+selfLink: https://www.googleapis.com/compute/v1/projects/d-com-437216/global/firewalls/default-allow-internal
+sourceRanges:
+- 10.128.0.0/9
+---
+allowed:
+- IPProtocol: tcp
+  ports:
+  - '3389'
+creationTimestamp: '2024-09-30T09:28:20.902-07:00'
+description: Allow RDP from anywhere
+direction: INGRESS
+disabled: false
+id: '3906206259826093899'
+kind: compute#firewall
+logConfig:
+  enable: false
+name: default-allow-rdp
+network: https://www.googleapis.com/compute/v1/projects/d-com-437216/global/networks/default
+priority: 65534
+selfLink: https://www.googleapis.com/compute/v1/projects/d-com-437216/global/firewalls/default-allow-rdp
+sourceRanges:
+- 0.0.0.0/0
+---
+allowed:
+- IPProtocol: tcp
+  ports:
+  - '22'
+creationTimestamp: '2024-09-30T09:28:20.872-07:00'
+description: Allow SSH from anywhere
+direction: INGRESS
+disabled: false
+id: '6860099412406267723'
+kind: compute#firewall
+logConfig:
+  enable: false
+name: default-allow-ssh
+network: https://www.googleapis.com/compute/v1/projects/d-com-437216/global/networks/default
+priority: 65534
+selfLink: https://www.googleapis.com/compute/v1/projects/d-com-437216/global/firewalls/default-allow-ssh
+sourceRanges:
+- 0.0.0.0/0
+---
+allowed:
+- IPProtocol: esp
+- IPProtocol: ah
+- IPProtocol: sctp
+- IPProtocol: tcp
+- IPProtocol: udp
+- IPProtocol: icmp
+creationTimestamp: '2024-11-19T11:12:34.893-08:00'
+description: ''
+direction: INGRESS
+disabled: false
+id: '4524245950592540109'
+kind: compute#firewall
+logConfig:
+  enable: false
+name: gke-dcom-cluster-9ca30c17-all
+network: https://www.googleapis.com/compute/v1/projects/d-com-437216/global/networks/default
+priority: 1000
+selfLink: https://www.googleapis.com/compute/v1/projects/d-com-437216/global/firewalls/gke-dcom-cluster-9ca30c17-all
+sourceRanges:
+- 10.108.0.0/14
+targetTags:
+- gke-dcom-cluster-9ca30c17-node
+---
+creationTimestamp: '2024-11-19T11:12:34.655-08:00'
+denied:
+- IPProtocol: tcp
+  ports:
+  - '10255'
+description: ''
+direction: INGRESS
+disabled: false
+id: '4620850073001090509'
+kind: compute#firewall
+logConfig:
+  enable: false
+name: gke-dcom-cluster-9ca30c17-exkubelet
+network: https://www.googleapis.com/compute/v1/projects/d-com-437216/global/networks/default
+priority: 1000
+selfLink: https://www.googleapis.com/compute/v1/projects/d-com-437216/global/firewalls/gke-dcom-cluster-9ca30c17-exkubelet
+sourceRanges:
+- 0.0.0.0/0
+targetTags:
+- gke-dcom-cluster-9ca30c17-node
+---
+allowed:
+- IPProtocol: tcp
+  ports:
+  - '10255'
+creationTimestamp: '2024-11-19T11:12:34.782-08:00'
+description: ''
+direction: INGRESS
+disabled: false
+id: '152524269003300301'
+kind: compute#firewall
+logConfig:
+  enable: false
+name: gke-dcom-cluster-9ca30c17-inkubelet
+network: https://www.googleapis.com/compute/v1/projects/d-com-437216/global/networks/default
+priority: 999
+selfLink: https://www.googleapis.com/compute/v1/projects/d-com-437216/global/firewalls/gke-dcom-cluster-9ca30c17-inkubelet
+sourceRanges:
+- 10.108.0.0/14
+sourceTags:
+- gke-dcom-cluster-9ca30c17-node
+targetTags:
+- gke-dcom-cluster-9ca30c17-node
+---
+allowed:
+- IPProtocol: tcp
+  ports:
+  - 1-65535
+- IPProtocol: udp
+  ports:
+  - 1-65535
+- IPProtocol: icmp
+creationTimestamp: '2024-11-19T11:12:34.884-08:00'
+description: ''
+direction: INGRESS
+disabled: false
+id: '2521283103084862925'
+kind: compute#firewall
+logConfig:
+  enable: false
+name: gke-dcom-cluster-9ca30c17-vms
+network: https://www.googleapis.com/compute/v1/projects/d-com-437216/global/networks/default
+priority: 1000
+selfLink: https://www.googleapis.com/compute/v1/projects/d-com-437216/global/firewalls/gke-dcom-cluster-9ca30c17-vms
+sourceRanges:
+- 10.128.0.0/9
+targetTags:
+- gke-dcom-cluster-9ca30c17-node
+---
+allowed:
+- IPProtocol: tcp
+  ports:
+  - '80'
+creationTimestamp: '2024-09-30T10:10:53.687-07:00'
+description: ''
+direction: INGRESS
+disabled: false
+id: '2836633401666528626'
+kind: compute#firewall
+logConfig:
+  enable: false
+name: http
+network: https://www.googleapis.com/compute/v1/projects/d-com-437216/global/networks/default
+priority: 1000
+selfLink: https://www.googleapis.com/compute/v1/projects/d-com-437216/global/firewalls/http
+sourceRanges:
+- 0.0.0.0/0
+---
+allowed:
+- IPProtocol: tcp
+  ports:
+  - '10256'
+creationTimestamp: '2024-11-19T11:32:46.928-08:00'
+description: '{"kubernetes.io/cluster-id":"6afd8c841e447ab9"}'
+destinationRanges:
+- 35.233.48.170
+direction: INGRESS
+disabled: false
+id: '2431709215074638129'
+kind: compute#firewall
+logConfig:
+  enable: false
+name: k8s-6afd8c841e447ab9-node-http-hc
+network: https://www.googleapis.com/compute/v1/projects/d-com-437216/global/networks/default
+priority: 1000
+selfLink: https://www.googleapis.com/compute/v1/projects/d-com-437216/global/firewalls/k8s-6afd8c841e447ab9-node-http-hc
+sourceRanges:
+- 130.211.0.0/22
+- 35.191.0.0/16
+- 209.85.152.0/22
+- 209.85.204.0/22
+targetTags:
+- gke-dcom-cluster-9ca30c17-node
+---
+allowed:
+- IPProtocol: tcp
+  ports:
+  - '80'
+  - '443'
+creationTimestamp: '2024-11-19T11:32:41.824-08:00'
+description: '{"kubernetes.io/service-name":"ingress-nginx/nginx-ingress-ingress-nginx-controller",
+  "kubernetes.io/service-ip":"35.233.48.170"}'
+destinationRanges:
+- 35.233.48.170
+direction: INGRESS
+disabled: false
+id: '3884190330501814582'
+kind: compute#firewall
+logConfig:
+  enable: false
+name: k8s-fw-a2e31dd93299644dc99323d85b688872
+network: https://www.googleapis.com/compute/v1/projects/d-com-437216/global/networks/default
+priority: 1000
+selfLink: https://www.googleapis.com/compute/v1/projects/d-com-437216/global/firewalls/k8s-fw-a2e31dd93299644dc99323d85b688872
+sourceRanges:
+- 0.0.0.0/0
+targetTags:
+- gke-dcom-cluster-9ca30c17-node

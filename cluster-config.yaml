@@ -1,0 +1,185 @@
+addonsConfig:
+  dnsCacheConfig: {}
+  gcePersistentDiskCsiDriverConfig:
+    enabled: true
+  gcsFuseCsiDriverConfig: {}
+  horizontalPodAutoscaling: {}
+  httpLoadBalancing: {}
+  kubernetesDashboard:
+    disabled: true
+  networkPolicyConfig:
+    disabled: true
+  rayOperatorConfig: {}
+authenticatorGroupsConfig: {}
+autopilot: {}
+autoscaling:
+  autoscalingProfile: BALANCED
+binaryAuthorization:
+  evaluationMode: DISABLED
+clusterIpv4Cidr: 10.108.0.0/14
+controlPlaneEndpointsConfig:
+  dnsEndpointConfig:
+    allowExternalTraffic: false
+    endpoint: gke-9ca30c178b42450893cfe2744bd8294815b1-737764647544.europe-west1-b.gke.goog
+  ipEndpointsConfig:
+    authorizedNetworksConfig:
+      gcpPublicCidrsAccessEnabled: true
+    enablePublicEndpoint: true
+    enabled: true
+    privateEndpoint: 10.132.0.4
+    publicEndpoint: 104.199.84.33
+createTime: '2024-11-19T19:11:49+00:00'
+currentMasterVersion: 1.31.1-gke.2105000
+currentNodeCount: 3
+currentNodeVersion: 1.31.1-gke.2105000
+databaseEncryption:
+  currentState: CURRENT_STATE_DECRYPTED
+  state: DECRYPTED
+defaultMaxPodsConstraint:
+  maxPodsPerNode: '110'
+endpoint: 104.199.84.33
+enterpriseConfig:
+  clusterTier: STANDARD
+  desiredTier: STANDARD
+etag: a0bf03df-9fd6-4a8b-ac44-7a444d568f4f
+id: 9ca30c178b42450893cfe2744bd8294815b1f6fc843b4b579f702c29a3f41d90
+initialClusterVersion: 1.31.1-gke.2105000
+instanceGroupUrls:
+- https://www.googleapis.com/compute/v1/projects/d-com-437216/zones/europe-west1-b/instanceGroupManagers/gke-dcom-cluster-pool-1-aac0ffd0-grp
+ipAllocationPolicy:
+  clusterIpv4Cidr: 10.108.0.0/14
+  clusterIpv4CidrBlock: 10.108.0.0/14
+  clusterSecondaryRangeName: gke-dcom-cluster-pods-9ca30c17
+  defaultPodIpv4RangeUtilization: 0.0029
+  podCidrOverprovisionConfig: {}
+  servicesIpv4Cidr: 34.118.224.0/20
+  servicesIpv4CidrBlock: 34.118.224.0/20
+  stackType: IPV4
+  useIpAliases: true
+labelFingerprint: a9dc16a7
+legacyAbac: {}
+location: europe-west1-b
+locations:
+- europe-west1-b
+loggingConfig:
+  componentConfig: {}
+loggingService: none
+maintenancePolicy:
+  resourceVersion: e3b0c442
+masterAuth:
+  clientCertificateConfig: {}
+  clusterCaCertificate: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUVMRENDQXBTZ0F3SUJBZ0lRUnBrRmV4cGdBb2p3cERKTkRVQmI3REFOQmdrcWhraUc5dzBCQVFzRkFEQXYKTVMwd0t3WURWUVFERXlRME1UazJNR05oTVMwek5UUXpMVFEwWVdVdFlqSmhaUzFqTVdGa05XUmhZamhrWlRRdwpJQmNOTWpReE1URTVNVGd4TVRRNVdoZ1BNakExTkRFeE1USXhPVEV4TkRsYU1DOHhMVEFyQmdOVkJBTVRKRFF4Ck9UWXdZMkV4TFRNMU5ETXRORFJoWlMxaU1tRmxMV014WVdRMVpHRmlPR1JsTkRDQ0FhSXdEUVlKS29aSWh2Y04KQVFFQkJRQURnZ0dQQURDQ0FZb0NnZ0dCQU5vUEtFbnpHTzZiYWYwTGl0ZTlJWDRRMk96OU0wOFU1ZnlxQU9jMApYa1p4Q29kTWhaM2RRMlE3WnNwWVFneVFsUFdybXloa2VMc1BNcnNmNFI4d3EyemJjbEh4STUxRTNtVmxKWWk0CnpsZ2dtYk5LV2s0MlB4eGxnUzdIMnBKNWpvOXBGK0M5M09uR253Ty8vYlRDcGJ1N0IxZ21ibXh4akF0eit6T00KaEErOHV0SnVrL0dQaDRPNWJqbFRicTdKWnNHYW5MdjhIYnR1dmhLZlAzV3FMVDc1Tlp4Z2xCU1htbUZlcFR6QwpSd3Z1T254S2xJTXYzWWgzeUFFYktLU2t5V2NiZUFsZURaZitZV2k1cFhhdmMxMUEwS0daVWxWOEJLTktaWEZ4CmpRYkJHQXVEUDNoY05XL1h2NXBJazlhcXRwTEVEaWJ1dGlobUFrcWREbFZWWEtBZktKL2RiSXVWL053ajBxVHMKUnhiUEk3UGVtRjNPRGh3R0FZeTBkUXVQbkVIUVBtWlgvc0NkRXVNQmRKZTRJNHVyWjFHZW1ZQ0o5aTFYS3pUZwpRV1QrTnA1blhKWGUzYkxodHAwMUNjdjV0RFJyYlVFaUtVQ3JTWHVZNkFCTWtTZXlNbnBhaWhrazdPcHg0UU5CCmR5WDBMSy81cC9JdzJvUDRINkpkM2dIdmFRSURBUUFCbzBJd1FEQU9CZ05WSFE4QkFmOEVCQU1DQWdRd0R3WUQKVlIwVEFRSC9CQVV3QXdFQi96QWRCZ05WSFE0RUZnUVVyYmxRMktnUzBwbmV4NzVjM1Z4b0M2c1RrNUV3RFFZSgpLb1pJaHZjTkFRRUxCUUFEZ2dHQkFCR1hMeUpkQThWbFlBVFFqMC9hLzJISGlKazVIdFIxa1dVa045RTd3R0xXCnhiUytydHNUakdQMCszeE5SUXZrL09URHkzWnZTTjhjWjZwV3ZZUHNQalptS0F3UlJtOXRndUh2c2ZDUUZEeE4KUTBkUyt3S1lRcUI1Rnl5NkRGSnlMVGM1K0R5ZEpESmlwa1VaQStGd2tmNnhuMUhBSTQrUTVJaXVRU2VSZnVJVgpIUGM5NlRuNWYwWExQUWVoYlNmc3FtVmJKWFZ1QUM3dnN3SUhzT016UVRaQW54Wm9LQ0hhMGVtR1pTZ3pUZ1RNCmkwZGpoYWlGT3FMZFRTeUtzTnZBSUY3ZGd3T1FJOGJjcUp2SGlZMVczd2R0d3ptUlY3cUFFM3dEOU1NcXE2M0EKc0g3NE05L0lKZHhJWlBLTU5Nb1FSWFJUdjR3cCtEVi9aSThrbzZYem9DQXo5bWRleXdqVmMzUHF1eCt0VXVGSwpqRUV6OVhCL0h5UkVyR0lYSmFPRzZlMHNMQ1VMeUIwMXczWDdDWjdyeFRic1BOc25NNmN0UUQ0YjJ3aFpNN0hqCjZpOVl5cW5ObVQ2dUtCREpuMjVpOS9jWTVaN0lDZjlYUVRuRnFGOHp3T0Y4WW1SbmdJL3RWb3M3S3pRcE1Xd1kKRzFIejA2WDVlMk5mdU9ySm45a2lqZz09Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K
+masterAuthorizedNetworksConfig:
+  gcpPublicCidrsAccessEnabled: true
+monitoringConfig:
+  advancedDatapathObservabilityConfig: {}
+  componentConfig: {}
+  managedPrometheusConfig:
+    enabled: true
+monitoringService: none
+name: dcom-cluster
+network: default
+networkConfig:
+  datapathProvider: LEGACY_DATAPATH
+  defaultEnablePrivateNodes: true
+  defaultSnatStatus: {}
+  network: projects/d-com-437216/global/networks/default
+  serviceExternalIpsConfig: {}
+  subnetwork: projects/d-com-437216/regions/europe-west1/subnetworks/default
+nodeConfig:
+  advancedMachineFeatures:
+    enableNestedVirtualization: false
+  diskSizeGb: 32
+  diskType: pd-balanced
+  effectiveCgroupMode: EFFECTIVE_CGROUP_MODE_V2
+  imageType: COS_CONTAINERD
+  machineType: e2-medium
+  metadata:
+    disable-legacy-endpoints: 'true'
+  oauthScopes:
+  - https://www.googleapis.com/auth/devstorage.read_only
+  - https://www.googleapis.com/auth/logging.write
+  - https://www.googleapis.com/auth/monitoring
+  - https://www.googleapis.com/auth/servicecontrol
+  - https://www.googleapis.com/auth/service.management.readonly
+  - https://www.googleapis.com/auth/trace.append
+  serviceAccount: default
+  shieldedInstanceConfig:
+    enableIntegrityMonitoring: true
+  windowsNodeConfig: {}
+nodePoolDefaults:
+  nodeConfigDefaults:
+    loggingConfig:
+      variantConfig:
+        variant: DEFAULT
+nodePools:
+- autoscaling: {}
+  config:
+    advancedMachineFeatures:
+      enableNestedVirtualization: false
+    diskSizeGb: 32
+    diskType: pd-balanced
+    effectiveCgroupMode: EFFECTIVE_CGROUP_MODE_V2
+    imageType: COS_CONTAINERD
+    machineType: e2-medium
+    metadata:
+      disable-legacy-endpoints: 'true'
+    oauthScopes:
+    - https://www.googleapis.com/auth/devstorage.read_only
+    - https://www.googleapis.com/auth/logging.write
+    - https://www.googleapis.com/auth/monitoring
+    - https://www.googleapis.com/auth/servicecontrol
+    - https://www.googleapis.com/auth/service.management.readonly
+    - https://www.googleapis.com/auth/trace.append
+    serviceAccount: default
+    shieldedInstanceConfig:
+      enableIntegrityMonitoring: true
+    windowsNodeConfig: {}
+  etag: 981b9f8c-251c-47c6-a05c-70bdb52d7c54
+  initialNodeCount: 3
+  instanceGroupUrls:
+  - https://www.googleapis.com/compute/v1/projects/d-com-437216/zones/europe-west1-b/instanceGroupManagers/gke-dcom-cluster-pool-1-aac0ffd0-grp
+  locations:
+  - europe-west1-b
+  management:
+    autoRepair: true
+    autoUpgrade: true
+  maxPodsConstraint:
+    maxPodsPerNode: '110'
+  name: pool-1
+  networkConfig:
+    enablePrivateNodes: true
+    podIpv4CidrBlock: 10.108.0.0/14
+    podIpv4RangeUtilization: 0.0029
+    podRange: gke-dcom-cluster-pods-9ca30c17
+  podIpv4CidrSize: 24
+  queuedProvisioning: {}
+  selfLink: https://container.googleapis.com/v1/projects/d-com-437216/zones/europe-west1-b/clusters/dcom-cluster/nodePools/pool-1
+  status: RUNNING
+  upgradeSettings:
+    maxSurge: 1
+    strategy: SURGE
+  version: 1.31.1-gke.2105000
+notificationConfig:
+  pubsub: {}
+privateClusterConfig:
+  enablePrivateNodes: true
+  privateEndpoint: 10.132.0.4
+  publicEndpoint: 104.199.84.33
+rbacBindingConfig:
+  enableInsecureBindingSystemAuthenticated: true
+  enableInsecureBindingSystemUnauthenticated: true
+releaseChannel:
+  channel: RAPID
+secretManagerConfig:
+  enabled: false
+securityPostureConfig:
+  mode: BASIC
+  vulnerabilityMode: VULNERABILITY_DISABLED
+selfLink: https://container.googleapis.com/v1/projects/d-com-437216/zones/europe-west1-b/clusters/dcom-cluster
+servicesIpv4Cidr: 34.118.224.0/20
+shieldedNodes:
+  enabled: true
+status: RUNNING
+subnetwork: default
+zone: europe-west1-b
