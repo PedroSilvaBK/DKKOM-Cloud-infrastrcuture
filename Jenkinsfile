@@ -100,5 +100,17 @@ pipeline {
                 sh 'kubectl apply -f message-service-schylladb.yaml'
             }
         }
+        stage('Create Kubernetes Secrets') {
+            when {
+                expression { params.ACTION == 'apply' }
+            }
+            steps {
+                sh '''
+                    kubectl create secret generic db-credentials \
+                        --from-literal=sql-instance-ip=${SQL_INSTANCE_IP} \
+                        --from-literal=redis-ip=${REDIS_IP}
+                '''
+            }
+        }
     }
 }
