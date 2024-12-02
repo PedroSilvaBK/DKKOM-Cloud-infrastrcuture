@@ -12,10 +12,11 @@ spec:
 ---
 
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: scylla
 spec:
+  serviceName: "scylla"
   replicas: 1
   selector:
     matchLabels:
