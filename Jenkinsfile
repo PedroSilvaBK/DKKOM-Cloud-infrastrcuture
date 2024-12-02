@@ -18,37 +18,37 @@ pipeline {
                 }
             }
         }
-        stage('Terraform Init') {
-            steps {
-                echo 'Initializing Terraform'
-                sh 'terraform init'
-            }
-        }
-        stage('Terraform Plan') {
-            steps {
-                echo 'Planning Terraform'
-                sh 'terraform plan'
-            }
-        }
-        stage('Terraform Apply') {
-            when {
-                expression { params.ACTION == 'apply' }
-            }
-            steps {
-                echo 'Applying Terraform'
-                sh 'terraform apply -auto-approve'
+        // stage('Terraform Init') {
+        //     steps {
+        //         echo 'Initializing Terraform'
+        //         sh 'terraform init'
+        //     }
+        // }
+        // stage('Terraform Plan') {
+        //     steps {
+        //         echo 'Planning Terraform'
+        //         sh 'terraform plan'
+        //     }
+        // }
+        // stage('Terraform Apply') {
+        //     when {
+        //         expression { params.ACTION == 'apply' }
+        //     }
+        //     steps {
+        //         echo 'Applying Terraform'
+        //         sh 'terraform apply -auto-approve'
 
-                // Capture Terraform outputs
-                script {
-                    def sqlInstanceIP = sh(script: 'terraform output -raw sql_instance_ip', returnStdout: true).trim()
-                    def redisIP = sh(script: 'terraform output -raw redis_ip', returnStdout: true).trim()
+        //         // Capture Terraform outputs
+        //         script {
+        //             def sqlInstanceIP = sh(script: 'terraform output -raw sql_instance_ip', returnStdout: true).trim()
+        //             def redisIP = sh(script: 'terraform output -raw redis_ip', returnStdout: true).trim()
 
-                    // Set environment variables for Kubernetes secrets creation
-                    env.SQL_INSTANCE_IP = sqlInstanceIP
-                    env.REDIS_IP = redisIP
-                }
-            }
-        }
+        //             // Set environment variables for Kubernetes secrets creation
+        //             env.SQL_INSTANCE_IP = sqlInstanceIP
+        //             env.REDIS_IP = redisIP
+        //         }
+        //     }
+        // }
         // stage('Terraform Destroy') {
         //     when {
         //         expression { params.ACTION == 'destroy' }
@@ -91,37 +91,37 @@ pipeline {
         //         '''
         //     }
         // }
-        stage('Deploy Kafka and ScyllaDB') {
-            when {
-                expression { params.ACTION == 'apply' }
-            }
-            steps {
-                sh 'kubectl apply -f kafka.yaml'
-                sh 'kubectl apply -f message-service-schylladb.yaml'
-            }
-        }
-        stage('Create Kubernetes Secrets') {
-            when {
-                expression { params.ACTION == 'apply' }
-            }
-            steps {
-                sh '''
-                    kubectl create secret generic database-ip \
-                        --from-literal=DATABASE_IP=${SQL_INSTANCE_IP}
-                '''
-                sh '''
-                    kubectl create secret generic redis-ip \
-                        --from-literal=REDIS_IP=${REDIS_IP}
-                '''
-                sh  'kubectl apply -f app-secrets.yaml'
-            }
-        }
+        // stage('Deploy Kafka and ScyllaDB') {
+        //     when {
+        //         expression { params.ACTION == 'apply' }
+        //     }
+        //     steps {
+        //         sh 'kubectl apply -f kafka.yaml'
+        //         sh 'kubectl apply -f message-service-schylladb.yaml'
+        //     }
+        // }
+        // stage('Create Kubernetes Secrets') {
+        //     when {
+        //         expression { params.ACTION == 'apply' }
+        //     }
+        //     steps {
+        //         sh '''
+        //             kubectl create secret generic database-ip \
+        //                 --from-literal=DATABASE_IP=${SQL_INSTANCE_IP}
+        //         '''
+        //         sh '''
+        //             kubectl create secret generic redis-ip \
+        //                 --from-literal=REDIS_IP=${REDIS_IP}
+        //         '''
+        //         sh  'kubectl apply -f app-secrets.yaml'
+        //     }
+        // }
         stage('setup scylla') {
             when {
                 expression { params.ACTION == 'apply' }
             }
             steps {
-                sh 'kubectl exec -it scylladb-0 -- cqlsh -e "CREATE KEYSPACE IF NOT EXISTS message_space WITH REPLICATION = {\'class\': \'SimpleStrategy\', \'replication_factor\': 3};"'
+                sh 'kubectl exec -it scylla-0 -- cqlsh -e "CREATE KEYSPACE IF NOT EXISTS message_space WITH REPLICATION = {\'class\': \'SimpleStrategy\', \'replication_factor\': 3};"'
             }
         }
     }
