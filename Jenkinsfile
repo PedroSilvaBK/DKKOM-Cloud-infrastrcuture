@@ -116,12 +116,20 @@ pipeline {
         //         sh  'kubectl apply -f app-secrets.yaml'
         //     }
         // }
-        stage('setup scylla') {
+        // stage('setup scylla') {
+        //     when {
+        //         expression { params.ACTION == 'apply' }
+        //     }
+        //     steps {
+        //         sh 'kubectl exec -it scylla-0 -- cqlsh -e "CREATE KEYSPACE IF NOT EXISTS message_space WITH REPLICATION = {\'class\': \'SimpleStrategy\', \'replication_factor\': 3};"'
+        //     }
+        // }
+        stage('apply ingress') {
             when {
                 expression { params.ACTION == 'apply' }
             }
             steps {
-                sh 'kubectl exec -it scylla-0 -- cqlsh -e "CREATE KEYSPACE IF NOT EXISTS message_space WITH REPLICATION = {\'class\': \'SimpleStrategy\', \'replication_factor\': 3};"'
+                sh 'kubectl apply -f ingress.yaml'
             }
         }
     }
