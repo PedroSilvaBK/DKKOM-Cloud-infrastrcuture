@@ -11,6 +11,7 @@ pipeline {
             steps {
                 script {
                     sh 'echo $GOOGLE_APPLICATION_CREDENTIALS > gcloud-key.json'
+                    sh 'ls -ls'
                     sh '''
                         gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
                     '''
