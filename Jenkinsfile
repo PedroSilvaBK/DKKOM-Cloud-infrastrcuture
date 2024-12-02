@@ -61,7 +61,11 @@ pipeline {
                 expression { params.ACTION == 'apply' }
             }
             steps {
-                sh 'helm install ingress-nginx ingress-nginx/ingress-nginx --namespace ingress-nginx --create-namespace'
+                sh '''
+                    helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+                    helm repo update
+                    helm install ingress-nginx ingress-nginx/ingress-nginx --namespace ingress-nginx --create-namespace
+                '''
             }
         }
         stage('Create Service Account for Cluster to Access Secret Manager') {
