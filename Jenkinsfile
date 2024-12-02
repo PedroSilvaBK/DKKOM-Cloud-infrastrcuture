@@ -4,12 +4,13 @@ pipeline {
         choice(name: 'ACTION', choices: ['apply', 'destroy'], description: 'Choose whether to apply or destroy infrastructure')
     }
     environment {
-        GOOGLE_APPLICATION_CREDENTIALS = credentials('GCP_KEY') // Use the ID from the stored credentials
+        GOOGLE_APPLICATION_CREDENTIALS = credentials('GCP_KEY')
     }
     stages {
         stage('Authenticate with Google Cloud') {
             steps {
                 script {
+                    sh 'echo $GOOGLE_APPLICATION_CREDENTIALS > gcloud-key.json'
                     sh '''
                         gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
                     '''
