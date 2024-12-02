@@ -116,5 +116,13 @@ pipeline {
                 sh  'kubectl apply -f app-secrets.yaml'
             }
         }
+        stage('setup scylla') {
+            when {
+                expression { params.ACTION == 'apply' }
+            }
+            steps {
+                sh 'kubectl exec -it scylladb-0 -- cqlsh -e "CREATE KEYSPACE IF NOT EXISTS message_space WITH REPLICATION = {\'class\': \'SimpleStrategy\', \'replication_factor\': 3};"'
+            }
+        }
     }
 }
