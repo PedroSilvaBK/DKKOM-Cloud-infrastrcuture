@@ -1,0 +1,53 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: scylla-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scylla
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: scylla
+  template:
+    metadata:
+      labels:
+        app: scylla
+    spec:
+      containers:
+      - name: scylla
+        image: europe-west1-docker.pkg.dev/d-com-437216/cluster-repo/scylladb
+        ports:
+        - containerPort: 9042
+        volumeMounts:
+        - name: scylla-data
+          mountPath: /var/lib/scylla
+      volumes:
+      - name: scylla-data
+        persistentVolumeClaim:
+          claimName: scylla-pvc
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: scylla
+spec:
+  ports:
+    - port: 9042
+      targetPort: 9042
+  selector:
+    app: scylla
+  type: ClusterIP
