@@ -68,25 +68,25 @@ pipeline {
         //         '''
         //     }
         // }
-        stage('Create Service Account for Cluster to Access Secret Manager') {
-            when {
-                expression { params.ACTION == 'apply' }
-            }
-            steps {
-                sh '''
-                    gcloud secrets add-iam-policy-binding projects/737764647544/secrets/service-principal-app \
-                        --role=roles/secretmanager.secretAccessor \
-                        --member=principal://iam.googleapis.com/projects/737764647544/locations/global/workloadIdentityPools/d-com-437216.svc.id.goog/subject/ns/default/sa/app-access
-                '''
-            }
-        }
+        // stage('Create Service Account for Cluster to Access Secret Manager') {
+        //     when {
+        //         expression { params.ACTION == 'apply' }
+        //     }
+        //     steps {
+        //         sh '''
+        //             gcloud secrets add-iam-policy-binding projects/737764647544/secrets/service-principal-app \
+        //                 --role=roles/secretmanager.secretAccessor \
+        //                 --member=principal://iam.googleapis.com/projects/737764647544/locations/global/workloadIdentityPools/d-com-437216.svc.id.goog/subject/ns/default/sa/app-access
+        //         '''
+        //     }
+        // }
         stage('Deploy Kafka and ScyllaDB') {
             when {
                 expression { params.ACTION == 'apply' }
             }
             steps {
-                sh 'kubectl apply -f kafka.yaml'
-                sh 'kubectl apply -f message-service.schylladb.yaml'
+                // sh 'kubectl apply -f kafka.yaml'
+                sh 'kubectl apply -f message-service-schylladb.yaml'
             }
         }
     }
