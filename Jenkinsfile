@@ -91,15 +91,15 @@ pipeline {
         //         '''
         //     }
         // }
-        // stage('Deploy Kafka and ScyllaDB') {
-        //     when {
-        //         expression { params.ACTION == 'apply' }
-        //     }
-        //     steps {
-        //         sh 'kubectl apply -f kafka.yaml'
-        //         sh 'kubectl apply -f message-service-schylladb.yaml'
-        //     }
-        // }
+        stage('Deploy Kafka and ScyllaDB') {
+            when {
+                expression { params.ACTION == 'apply' }
+            }
+            steps {
+                sh 'kubectl apply -f kafka.yaml'
+                sh 'kubectl apply -f message-service-schylladb.yaml'
+            }
+        }
         stage('Create Kubernetes Secrets') {
             when {
                 expression { params.ACTION == 'apply' }
@@ -113,6 +113,7 @@ pipeline {
                     kubectl create secret generic redis-ip \
                         --from-literal=REDIS_IP=${REDIS_IP}
                 '''
+                sh  'kubectl apply -f app-secrets.yaml'
             }
         }
     }
