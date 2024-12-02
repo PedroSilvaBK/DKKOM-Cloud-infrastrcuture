@@ -5,6 +5,7 @@ pipeline {
     }
     environment {
         GOOGLE_APPLICATION_CREDENTIALS = credentials('GCP_KEY')
+        GOOGLE_CLIENT_SECRET = credentials('GOOGLE_CLIENT_SECRET')
     }
     stages {
         stage('Authenticate with Google Cloud') {
@@ -114,6 +115,7 @@ pipeline {
                         --from-literal=REDIS_IP=${REDIS_IP}
                 '''
                 sh  'kubectl apply -f app-secrets.yaml'
+                sh 'kubectl create secret generic google-client-secret --from-literal=GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}'
             }
         }
         stage('setup scylla') {
