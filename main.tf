@@ -1,3 +1,10 @@
+terraform {
+  backend "gcs" {
+    bucket  = "dkkcom-image-bucket"         # Replace with your GCS bucket name
+    prefix  = "terraform/state"             # Path in the bucket to store the state file
+  }
+}
+
 provider "google" {
   project = "d-com-437216"
   region  = "europe-west1"
