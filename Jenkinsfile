@@ -10,9 +10,8 @@ pipeline {
         stage('Authenticate with Google Cloud') {
             steps {
                 script {
-                    sh 'echo $GOOGLE_APPLICATION_CREDENTIALS > gcloud-key.json'
                     sh '''
-                        gcloud auth activate-service-account --key-file=gcloud-key.json
+                        gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
                     '''
                 }
             }
@@ -84,12 +83,6 @@ pipeline {
                 sh 'kubectl apply -f kafka.yaml'
                 sh 'kubectl apply -f message-service.schylladb.yaml'
             }
-        }
-    }
-    post {
-        always {
-            echo 'Cleaning up temporary files'
-            sh 'rm -f gcloud-key.json'
         }
     }
 }
