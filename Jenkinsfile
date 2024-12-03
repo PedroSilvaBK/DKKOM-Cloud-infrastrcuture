@@ -122,7 +122,7 @@ pipeline {
             steps {
                 echo 'Delaying for 5 minutes...'
                 script {
-                    sleep 20
+                    sleep 60
                 }
             }
         }
