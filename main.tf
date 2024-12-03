@@ -139,6 +139,12 @@ resource "google_sql_database_instance" "default" {
   database_version = "MYSQL_8_0"
   region           = "europe-west1"
 
+  timeouts {
+    create = "30m"
+    update = "30m"
+    delete = "30m"
+  }
+
   settings {
     tier       = "db-custom-4-16384" # 4 vCPUs, 16 GB RAM
     disk_size  = 20                 # 20 GB
@@ -165,6 +171,8 @@ resource "google_sql_database" "additional_databases" {
   instance = google_sql_database_instance.default.name
   charset  = "utf8"
   collation = "utf8_general_ci"
+
+  depends_on = [ google_sql_database_instance.default ]
 }
 
 resource "google_sql_user" "root" {
