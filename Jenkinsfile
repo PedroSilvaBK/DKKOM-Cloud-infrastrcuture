@@ -119,6 +119,9 @@ pipeline {
             }
         }
         stage('Delay Stage') {  // This stage will have a delay
+            when {
+                expression { params.ACTION == 'apply' }
+            }
             steps {
                 echo 'Delaying for 5 minutes...'
                 script {
