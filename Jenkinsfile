@@ -123,7 +123,7 @@ pipeline {
                 expression { params.ACTION == 'apply' }
             }
             steps {
-                echo 'Delaying for 5 minutes...'
+                echo 'Delaying for 60 seconds'
                 script {
                     sleep 60
                 }
