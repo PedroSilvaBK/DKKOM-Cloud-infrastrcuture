@@ -22,7 +22,7 @@ pipeline {
         stage('Terraform Init') {
             steps {
                 echo 'Initializing Terraform'
-                sh 'terraform init'
+                sh 'terraform init -reconfigure'
             }
         }
         stage('Terraform Plan') {
