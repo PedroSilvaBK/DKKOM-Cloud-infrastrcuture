@@ -64,7 +64,7 @@ pipeline {
                 expression { params.ACTION == 'apply' }
             }
             steps {
-                sh 'gcloud container clusters get-credentials dcom-cluster --zone europe-west1-b --project d-com-437216'
+                sh 'gcloud container clusters get-credentials dcom-cluster --zone europe-west1-b --project dkkom-446515'
             }
         }
         stage('Install Ingress') {
@@ -86,9 +86,9 @@ pipeline {
             steps {
                 sh '''
                     kubectl create serviceaccount app-access
-                    gcloud secrets add-iam-policy-binding projects/737764647544/secrets/service-principal-app \
+                    gcloud secrets add-iam-policy-binding projects/953454344870/secrets/service-principal-app \
                         --role=roles/secretmanager.secretAccessor \
-                        --member=principal://iam.googleapis.com/projects/737764647544/locations/global/workloadIdentityPools/d-com-437216.svc.id.goog/subject/ns/default/sa/app-access
+                        --member=principal://iam.googleapis.com/projects/953454344870/locations/global/workloadIdentityPools/dkkom-446515.svc.id.goog/subject/ns/default/sa/app-access
                 '''
             }
         }

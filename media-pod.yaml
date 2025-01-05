@@ -6,7 +6,7 @@ metadata:
 spec:
   serviceAccountName: role-access
   containers:
-  - image: europe-west1-docker.pkg.dev/d-com-437216/cluster-repo/media-service:latest
+  - image: europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/media-service:latest
     ports:
     - containerPort: 8080
     imagePullPolicy: IfNotPresent

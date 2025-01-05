@@ -1,12 +1,12 @@
 terraform {
   backend "gcs" {
-    bucket  = "dkkcom-image-bucket"         # Replace with your GCS bucket name
+    bucket  = "dkkom-image-bucket"         # Replace with your GCS bucket name
     prefix  = "terraform/state"             # Path in the bucket to store the state file
   }
 }
 
 provider "google" {
-  project = "d-com-437216"
+  project = "dkkom-446515"
   region  = "europe-west1"
 }
 
@@ -19,7 +19,7 @@ resource "google_redis_instance" "redis_instance" {
 
   connect_mode    = "PRIVATE_SERVICE_ACCESS"  # Equivalent to --connect-mode=PRIVATE_SERVICE_ACCESS
 
-  authorized_network = "projects/d-com-437216/global/networks/default" # Network configuration
+  authorized_network = "projects/dkkom-446515/global/networks/default" # Network configuration
 }
 
 resource "google_compute_router" "cluster_router" {
@@ -46,8 +46,8 @@ resource "google_compute_router_nat" "cluster_nat" {
 resource "google_container_cluster" "dcom_cluster" {
   name                   = "dcom-cluster"
   location               = "europe-west1-b"
-  network                = "projects/d-com-437216/global/networks/default"
-  subnetwork             = "projects/d-com-437216/regions/europe-west1/subnetworks/default"
+  network                = "projects/dkkom-446515/global/networks/default"
+  subnetwork             = "projects/dkkom-446515/regions/europe-west1/subnetworks/default"
 
   remove_default_node_pool = true
   initial_node_count       = 1
@@ -91,7 +91,7 @@ resource "google_container_cluster" "dcom_cluster" {
   deletion_protection = false
 
   workload_identity_config {
-    workload_pool = "d-com-437216.svc.id.goog"
+    workload_pool = "dkkom-446515.svc.id.goog"
   }
 
   secret_manager_config {
@@ -152,7 +152,7 @@ resource "google_sql_database_instance" "default" {
     availability_type = "ZONAL"     # Single Zone
 
     ip_configuration {
-      private_network = "projects/d-com-437216/global/networks/default" # Private VPC Network
+      private_network = "projects/dkkom-446515/global/networks/default" # Private VPC Network
       ipv4_enabled    = false
     }
 

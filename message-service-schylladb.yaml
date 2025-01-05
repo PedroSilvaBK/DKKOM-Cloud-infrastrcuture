@@ -28,7 +28,7 @@ spec:
     spec:
       containers:
       - name: scylla
-        image: europe-west1-docker.pkg.dev/d-com-437216/cluster-repo/scylladb
+        image: europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/scylladb
         ports:
         - containerPort: 9042
         volumeMounts:
