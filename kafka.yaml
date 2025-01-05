@@ -29,7 +29,7 @@ spec:
     spec:
       containers:
       - name: zookeeper
-        image: europe-west1-docker.pkg.dev/d-com-437216/cluster-repo/bitnami/zookeeper:latest
+        image: europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/bitnami/zookeeper:latest
         ports:
         - containerPort: 2181
         env:
@@ -57,7 +57,7 @@ spec:
     spec:
       containers:
       - name: kafka
-        image: europe-west1-docker.pkg.dev/d-com-437216/cluster-repo/bitnami/kafka:latest
+        image: europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/bitnami/kafka:latest
         env:
         - name: KAFKA_BROKER_ID
           value: "1"
