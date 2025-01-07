@@ -86,7 +86,7 @@ resource "google_container_cluster" "dcom_cluster" {
     managed_prometheus {
       enabled = true
     }
-    enable_components = ["SYSTEM_METRICS"]
+    enable_components = ["SYSTEM_COMPONENTS"]
   }
 
   deletion_protection = false
