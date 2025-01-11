@@ -39,5 +39,3 @@ spec:
             name: media-service
             port:
               number: 8080
-
-
