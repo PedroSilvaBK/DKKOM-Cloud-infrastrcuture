@@ -102,17 +102,6 @@ pipeline {
                 '''
             }
         }
-        stage('Setup open telemetry collector') {
-            when {
-                expression { params.ACTION == 'apply' }
-            }
-            steps {
-                dir('trace-collector-config-files') {
-                    sh 'kubectl apply -f otel-collector-config.yaml'
-                    sh 'kubectl apply -f otel-collector-deployment.yaml'
-                }
-            }
-        }
         stage('Deploy Kafka and ScyllaDB') {
             when {
                 expression { params.ACTION == 'apply' }
@@ -137,6 +126,17 @@ pipeline {
                 '''
                 sh  'kubectl apply -f app-secrets.yaml'
                 sh 'kubectl create secret generic google-client-secret --from-literal=GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}'
+            }
+        }
+        stage('Setup open telemetry collector') {
+            when {
+                expression { params.ACTION == 'apply' }
+            }
+            steps {
+                dir('trace-collector-config-files') {
+                    sh 'kubectl apply -f otel-collector-config.yaml'
+                    sh 'kubectl apply -f otel-collector-deployment.yaml'
+                }
             }
         }
         stage('Delay Stage') {  // This stage will have a delay
