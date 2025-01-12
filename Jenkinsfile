@@ -95,6 +95,11 @@ pipeline {
                         --role=roles/secretmanager.secretAccessor \
                         --member=principal://iam.googleapis.com/projects/953454344870/locations/global/workloadIdentityPools/dkkom-446515.svc.id.goog/subject/ns/default/sa/app-access
                 '''
+                sh '''
+                    gcloud secrets add-iam-policy-binding projects/953454344870/secrets/cloud-profiler-agent-sa-key \
+                        --role=roles/secretmanager.secretAccessor \
+                        --member=principal://iam.googleapis.com/projects/953454344870/locations/global/workloadIdentityPools/dkkom-446515.svc.id.goog/subject/ns/default/sa/app-access
+                '''
             }
         }
         stage('Setup open telemetry collector') {
