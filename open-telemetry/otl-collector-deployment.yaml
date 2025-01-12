@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: otel-collector
+  labels:
+    app: otel-collector
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: otel-collector
+  template:
+    metadata:
+      labels:
+        app: otel-collector
+    spec:
+      serviceAccountName: app-access
+      containers:
+      - name: otel-collector
+        image: europe-west1-docker.pkg.dev/dkkom-446515/cluster-repo/opentelemetry-collector-contrib:latest
+        ports:
+        - containerPort: 4317 # gRPC
+        - containerPort: 4318 # HTTP/JSON
+        args: 
+          - "--config=/etc/otelcol/config.yaml"
+        volumeMounts:
+        - name: config-vol
+          mountPath: /etc/otelcol
+        # Only needed if using a secret for credentials outside GCP
+        - name: service-account-vol
+          mountPath: /etc/otelcol/creds
+          readOnly: true
+        env:
+        - name: MY_POD_IP
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: status.podIP
+        # If using a service account JSON:
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: /etc/otelcol/creds/cloud-trace-key.json
+      volumes:
+      - name: config-vol
+        configMap:
+          name: otel-collector-config
+          items:
+            - key: config.yaml
+              path: config.yaml
+      # Only needed if using a service account JSON:
+      - name: service-account-vol
+        csi:
+          driver: secrets-store-gke.csi.k8s.io
+          readOnly: true
+          volumeAttributes:
+            secretProviderClass: cloud-trace-secret
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: otel-collector
+spec:
+  selector:
+    app: otel-collector
+  ports:
+    - name: grpc-otlp
+      port: 4317
+      targetPort: 4317
+    - name: http-otlp
+      port: 4318
+      targetPort: 4318
+  type: ClusterIP
