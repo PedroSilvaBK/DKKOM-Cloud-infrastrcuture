@@ -107,7 +107,7 @@ resource "google_container_node_pool" "default_node_pool" {
   node_count = 3
 
   node_config {
-    machine_type = "e2-medium"
+    machine_type = "e2-standard-2"
     disk_type    = "pd-balanced"
     disk_size_gb = 20
     image_type   = "COS_CONTAINERD"
