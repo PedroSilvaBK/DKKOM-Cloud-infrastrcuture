@@ -8,7 +8,7 @@ ingress:
           service:
             name: api-gateway-service
             port: 8080
-    - host: staging.dkkom.com
+    - host: dkkom.com
       paths:
         - path: /
           pathType: Prefix
