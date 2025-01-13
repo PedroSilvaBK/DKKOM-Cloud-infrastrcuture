@@ -1,7 +1,7 @@
 pipeline {
     agent any
     parameters {
-        choice(name: 'ACTION', choices: ['create-prod', 'create-staging', 'destroy'], description: 'Choose whether to create or destroy infrastructure')
+        choice(name: 'ACTION', choices: ['create-prod', 'create-staging', 'destroy-prod', 'destroy-staging'], description: 'Choose whether to create or destroy infrastructure')
     }
     environment {
         GOOGLE_APPLICATION_CREDENTIALS = credentials('GCP_KEY')
@@ -19,49 +19,117 @@ pipeline {
                 }
             }
         }
-        stage('Terraform Init') {
-            steps {
-                echo 'Initializing Terraform'
-                sh 'terraform init -reconfigure'
-            }
-        }
-        stage('Terraform Plan') {
-            steps {
-                echo 'Planning Terraform'
-                sh 'terraform plan'
-            }
-        }
-        stage('Terraform Apply') {
+        stage('Terraform Init Production') {
             when {
                 expression { params.ACTION == 'create-prod' }
             }
             steps {
-                echo 'Applying Terraform'
-                sh 'terraform apply -auto-approve'
-
-                // Capture Terraform outputs
-                script {
-                    def sqlInstanceIP = sh(script: 'terraform output -raw sql_instance_ip', returnStdout: true).trim()
-                    def redisIP = sh(script: 'terraform output -raw redis_ip', returnStdout: true).trim()
-
-                    // Set environment variables for Kubernetes secrets creation
-                    env.SQL_INSTANCE_IP = sqlInstanceIP
-                    env.REDIS_IP = redisIP
+                dir("production") {
+                    echo 'Initializing Terraform for production'
+                    sh 'terraform init -reconfigure'
                 }
             }
         }
-        stage('Terraform Destroy') {
+        stage('Terraform Plan Production') {
             when {
-                expression { params.ACTION == 'destroy' }
+                expression { params.ACTION == 'create-prod' }
             }
             steps {
-                echo 'Destroying Terraform infrastructure'
-                sh 'terraform destroy -auto-approve'
+                dir("production") {
+                    echo 'Planning Terraform for production'
+                    sh 'terraform plan'
+                }
+            }
+        }
+        stage('Terraform Apply Production') {
+            when {
+                expression { params.ACTION == 'create-prod' }
+            }
+            steps {
+                dir('production') {
+                    echo 'Applying Terraform'
+                    sh 'terraform apply -auto-approve'
+
+                    // Capture Terraform outputs
+                    script {
+                        def sqlInstanceIP = sh(script: 'terraform output -raw sql_instance_ip', returnStdout: true).trim()
+                        def redisIP = sh(script: 'terraform output -raw redis_ip', returnStdout: true).trim()
+
+                        // Set environment variables for Kubernetes secrets creation
+                        env.SQL_INSTANCE_IP = sqlInstanceIP
+                        env.REDIS_IP = redisIP
+                    }
+                }
+            }
+        }
+        stage('Terraform Destroy Production') {
+            when {
+                expression { params.ACTION == 'destroy-prod' }
+            }
+            steps {
+                dir('production') {
+                    echo 'Destroying Terraform for production'
+                    sh 'terraform destroy -auto-approve'
+                }
+            }
+        }
+        stage('Terraform Init Staging') {
+            when {
+                expression { params.ACTION == 'create-staging' }
+            }
+            steps {
+                dir("staging") {
+                    echo 'Initializing Terraform for Staging'
+                    sh 'terraform init -reconfigure'
+                }
+            }
+        }
+        stage('Terraform Plan Staging') {
+            when {
+                expression { params.ACTION == 'create-staging' }
+            }
+            steps {
+                dir("staging") {
+                    echo 'Planning Terraform for Staging'
+                    sh 'terraform plan'
+                }
+            }
+        }
+        stage('Terraform Apply Staging') {
+            when {
+                expression { params.ACTION == 'create-staging' }
+            }
+            steps {
+                dir('staging') {
+                    echo 'Applying Terraform'
+                    sh 'terraform apply -auto-approve'
+
+                    // Capture Terraform outputs
+                    script {
+                        def sqlInstanceIP = sh(script: 'terraform output -raw sql_instance_ip', returnStdout: true).trim()
+                        def redisIP = sh(script: 'terraform output -raw redis_ip', returnStdout: true).trim()
+
+                        // Set environment variables for Kubernetes secrets creation
+                        env.SQL_INSTANCE_IP = sqlInstanceIP
+                        env.REDIS_IP = redisIP
+                    }
+                }
+            }
+        }
+        stage('Terraform Destroy Staging') {
+            when {
+                expression { params.ACTION == 'destroy-staging' }
+            }
+            steps {
+                dir('staging') {
+                    echo 'Destroying Terraform for Staging'
+                    sh 'terraform destroy -auto-approve'
+                }
             }
         }
         stage('Get Cluster Credentials') {
             when {
-                expression { params.ACTION == 'create-prod' }
+                expression { params.ACTION == 'create-prod' || params.ACTION == 'create-staging' }
             }
             steps {
                 sh 'gcloud container clusters get-credentials dcom-cluster --zone europe-west1-b --project dkkom-446515'
@@ -69,7 +137,7 @@ pipeline {
         }
         stage('Install Ingress') {
             when {
-                expression { params.ACTION == 'create-prod' }
+                expression { params.ACTION == 'create-prod' || params.ACTION == 'create-staging' }
             }
             steps {
                 sh '''
@@ -81,7 +149,7 @@ pipeline {
         }
         stage('Create Service Account for Cluster to Access Secret Manager') {
             when {
-                expression { params.ACTION == 'create-prod' }
+                expression { params.ACTION == 'create-prod' || params.ACTION == 'create-staging' }
             }
             steps {
                 sh '''
@@ -104,7 +172,7 @@ pipeline {
         }
         stage('Deploy Kafka and ScyllaDB') {
             when {
-                expression { params.ACTION == 'create-prod' }
+                expression { params.ACTION == 'create-prod' || params.ACTION == 'create-staging' }
             }
             steps {
                 sh 'kubectl apply -f kafka.yaml'
@@ -113,7 +181,7 @@ pipeline {
         }
         stage('Create Kubernetes Secrets') {
             when {
-                expression { params.ACTION == 'create-prod' }
+                expression { params.ACTION == 'create-prod' || params.ACTION == 'create-staging' }
             }
             steps {
                 sh '''
@@ -130,7 +198,7 @@ pipeline {
         }
         stage('Setup open telemetry collector') {
             when {
-                expression { params.ACTION == 'create-prod' }
+                expression { params.ACTION == 'create-prod' || params.ACTION == 'create-staging' }
             }
             steps {
                 dir('trace-collector-config-files') {
@@ -141,7 +209,7 @@ pipeline {
         }
         stage('Delay Stage') {  // This stage will have a delay
             when {
-                expression { params.ACTION == 'create-prod' }
+                expression { params.ACTION == 'create-prod' || params.ACTION == 'create-staging' }
             }
             steps {
                 echo 'Delaying for 60 seconds'
@@ -152,13 +220,13 @@ pipeline {
         }
         stage('setup scylla') {
             when {
-                expression { params.ACTION == 'create-prod' }
+                expression { params.ACTION == 'create-prod' || params.ACTION == 'create-staging' }
             }
             steps {
                 sh 'kubectl exec -it scylla-0 -- cqlsh -e "CREATE KEYSPACE IF NOT EXISTS message_space WITH REPLICATION = {\'class\': \'SimpleStrategy\', \'replication_factor\': 3};"'
             }
         }
-        stage('apply ingress') {
+        stage('apply ingress production') {
             when {
                 expression { params.ACTION == 'create-prod' }
             }
@@ -166,6 +234,17 @@ pipeline {
                 sh '''
                     helm upgrade --install ingress ./helm \
                         -f ./helm/values.yaml
+                    '''
+            }
+        }
+        stage('apply ingress staging') {
+            when {
+                expression { params.ACTION == 'create-staging' }
+            }
+            steps {
+                sh '''
+                    helm upgrade --install ingress-staging ./helm \
+                        -f ./helm/values-staging.yaml
                     '''
             }
         }
