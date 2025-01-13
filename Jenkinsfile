@@ -1,7 +1,7 @@
 pipeline {
     agent any
     parameters {
-        choice(name: 'ACTION', choices: ['apply', 'destroy'], description: 'Choose whether to apply or destroy infrastructure')
+        choice(name: 'ACTION', choices: ['create-prod', 'create-staging' 'destroy'], description: 'Choose whether to create or destroy infrastructure')
     }
     environment {
         GOOGLE_APPLICATION_CREDENTIALS = credentials('GCP_KEY')
@@ -33,7 +33,7 @@ pipeline {
         }
         stage('Terraform Apply') {
             when {
-                expression { params.ACTION == 'apply' }
+                expression { params.ACTION == 'create-prod' }
             }
             steps {
                 echo 'Applying Terraform'
@@ -61,7 +61,7 @@ pipeline {
         }
         stage('Get Cluster Credentials') {
             when {
-                expression { params.ACTION == 'apply' }
+                expression { params.ACTION == 'create-prod' }
             }
             steps {
                 sh 'gcloud container clusters get-credentials dcom-cluster --zone europe-west1-b --project dkkom-446515'
@@ -69,7 +69,7 @@ pipeline {
         }
         stage('Install Ingress') {
             when {
-                expression { params.ACTION == 'apply' }
+                expression { params.ACTION == 'create-prod' }
             }
             steps {
                 sh '''
@@ -81,7 +81,7 @@ pipeline {
         }
         stage('Create Service Account for Cluster to Access Secret Manager') {
             when {
-                expression { params.ACTION == 'apply' }
+                expression { params.ACTION == 'create-prod' }
             }
             steps {
                 sh '''
@@ -104,7 +104,7 @@ pipeline {
         }
         stage('Deploy Kafka and ScyllaDB') {
             when {
-                expression { params.ACTION == 'apply' }
+                expression { params.ACTION == 'create-prod' }
             }
             steps {
                 sh 'kubectl apply -f kafka.yaml'
@@ -113,7 +113,7 @@ pipeline {
         }
         stage('Create Kubernetes Secrets') {
             when {
-                expression { params.ACTION == 'apply' }
+                expression { params.ACTION == 'create-prod' }
             }
             steps {
                 sh '''
@@ -130,7 +130,7 @@ pipeline {
         }
         stage('Setup open telemetry collector') {
             when {
-                expression { params.ACTION == 'apply' }
+                expression { params.ACTION == 'create-prod' }
             }
             steps {
                 dir('trace-collector-config-files') {
@@ -141,7 +141,7 @@ pipeline {
         }
         stage('Delay Stage') {  // This stage will have a delay
             when {
-                expression { params.ACTION == 'apply' }
+                expression { params.ACTION == 'create-prod' }
             }
             steps {
                 echo 'Delaying for 60 seconds'
@@ -152,7 +152,7 @@ pipeline {
         }
         stage('setup scylla') {
             when {
-                expression { params.ACTION == 'apply' }
+                expression { params.ACTION == 'create-prod' }
             }
             steps {
                 sh 'kubectl exec -it scylla-0 -- cqlsh -e "CREATE KEYSPACE IF NOT EXISTS message_space WITH REPLICATION = {\'class\': \'SimpleStrategy\', \'replication_factor\': 3};"'
@@ -160,10 +160,13 @@ pipeline {
         }
         stage('apply ingress') {
             when {
-                expression { params.ACTION == 'apply' }
+                expression { params.ACTION == 'create-prod' }
             }
             steps {
-                sh 'kubectl apply -f ingress.yaml'
+                sh '''
+                    helm upgrade --install ingress ./helm \
+                        -f ./helm/values.yaml
+                    '''
             }
         }
     }

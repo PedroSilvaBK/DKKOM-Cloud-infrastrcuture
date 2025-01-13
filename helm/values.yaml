@@ -1,0 +1,24 @@
+ingress:
+  forceSSL: false  # Set to true to enable SSL redirection
+  rules:
+    - host: api.dkkom.com
+      paths:
+        - path: /
+          pathType: Prefix
+          service:
+            name: api-gateway-service
+            port: 8080
+    - host: dkkom.com
+      paths:
+        - path: /
+          pathType: Prefix
+          service:
+            name: frontend
+            port: 80
+    - host: cdn.dkkom.com
+      paths:
+        - path: /
+          pathType: Prefix
+          service:
+            name: media-service
+            port: 8080
