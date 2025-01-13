@@ -1,7 +1,7 @@
 pipeline {
     agent any
     parameters {
-        choice(name: 'ACTION', choices: ['create-prod', 'create-staging' 'destroy'], description: 'Choose whether to create or destroy infrastructure')
+        choice(name: 'ACTION', choices: ['create-prod', 'create-staging', 'destroy'], description: 'Choose whether to create or destroy infrastructure')
     }
     environment {
         GOOGLE_APPLICATION_CREDENTIALS = credentials('GCP_KEY')
