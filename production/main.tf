@@ -1,7 +1,7 @@
 terraform {
   backend "gcs" {
     bucket  = "dkkom-image-bucket"         # Replace with your GCS bucket name
-    prefix  = "terraform/state"             # Path in the bucket to store the state file
+    prefix  = "terraform/prod"             # Path in the bucket to store the state file
   }
 }
 
