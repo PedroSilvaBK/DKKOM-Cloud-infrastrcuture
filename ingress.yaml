@@ -1,27 +1,41 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ .Release.Name }}-ingress
+  name: microservices-ingress
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
     kubernetes.io/ingress.class: nginx
-    {{- if .Values.ingress.forceSSL }}
-    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    {{- end }}
+    # nginx.ingress.kubernetes.io/force-ssl-redirect: "true"  # Force SSL redirection
+    # nginx.ingress.kubernetes.io/ssl-redirect: "true"
 spec:
   rules:
-  {{- range .Values.ingress.rules }}
-  - host: {{ .host }}
+  - host: api.dkkom.com
     http:
       paths:
-      {{- range .paths }}
-      - path: {{ .path }}
-        pathType: {{ .pathType }}
+      - path: /
+        pathType: Prefix
         backend:
           service:
-            name: {{ .service.name }}
+            name: api-gateway-service
             port:
-              number: {{ .service.port }}
-      {{- end }}
-  {{- end }}
+              number: 8080
+  - host: dkkom.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: frontend
+            port:
+              number: 80
+  - host: cdn.dkkom.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: media-service
+            port:
+              number: 8080
