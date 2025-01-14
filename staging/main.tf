@@ -147,7 +147,7 @@ resource "google_container_cluster" "dcom_cluster" {
     managed_prometheus {
       enabled = true
     }
-    enable_components = ["SYSTEM_COMPONENTS"]
+    enable_components = ["SYSTEM_COMPONENTS", "HPA", "APISERVER", "POD", "KUBELET", "DEPLOYMENT", "CADVISOR"]
   }
 
   deletion_protection = false
@@ -165,7 +165,7 @@ resource "google_container_cluster" "dcom_cluster" {
 resource "google_container_node_pool" "default_node_pool" {
   cluster    = google_container_cluster.dcom_cluster.name
   location   = google_container_cluster.dcom_cluster.location
-  node_count = 3
+  node_count = 4
 
   node_config {
     machine_type = "e2-standard-2"
