@@ -217,6 +217,7 @@ pipeline {
                 expression { params.ACTION == 'create-prod' }
             }
             steps {
+                sh 'gcloud compute ssh scylla-node2 --zone=europe-west4-b --command "ls -la"'
                 dir('scylla-db-configuration') {
                     sh 'gcloud compute scp ./node-1-config/scylla.yaml scylla-node1:/etc/scylla/scylla.yaml --zone=europe-west4-b'
                     sh 'gcloud compute scp ./node-2-config/scylla.yaml scylla-node2:/etc/scylla/scylla.yaml --zone=europe-west4-b'
