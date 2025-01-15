@@ -229,7 +229,7 @@ resource "google_compute_router" "scylla-router" {
 
 resource "google_compute_router_nat" "scylla-nat" {
   name   = "scylla-nat"
-  router = google_compute_router.scylla-router
+  router = google_compute_router.scylla-router.name
   region = google_compute_router.scylla-router.region
 
   nat_ip_allocate_option    = "AUTO_ONLY"  # Equivalent to --auto-allocate-nat-external-ips
