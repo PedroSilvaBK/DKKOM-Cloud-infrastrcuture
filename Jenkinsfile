@@ -54,10 +54,12 @@ pipeline {
                     // Capture Terraform outputs
                     script {
                         def sqlInstanceIP = sh(script: 'terraform output -raw sql_instance_ip', returnStdout: true).trim()
+                        def sqlIntanceReplicaIP = sh(script: 'terraform output -raw sql_instance_replica_ip', returnStdout: true).trim()
                         def redisIP = sh(script: 'terraform output -raw redis_ip', returnStdout: true).trim()
 
                         // Set environment variables for Kubernetes secrets creation
                         env.SQL_INSTANCE_IP = sqlInstanceIP
+                        env.SQL_INSTANCE_REPLICA_IP = sqlIntanceReplicaIP
                         env.REDIS_IP = redisIP
                     }
                 }
@@ -108,12 +110,10 @@ pipeline {
                     // Capture Terraform outputs
                     script {
                         def sqlInstanceIP = sh(script: 'terraform output -raw sql_instance_ip', returnStdout: true).trim()
-                        def sqlIntanceReplicaIP = sh(script: 'terraform output -raw sql_instance_replica_ip', returnStdout: true).trim()
                         def redisIP = sh(script: 'terraform output -raw redis_ip', returnStdout: true).trim()
 
                         // Set environment variables for Kubernetes secrets creation
                         env.SQL_INSTANCE_IP = sqlInstanceIP
-                        env.SQL_INSTANCE_REPLICA_IP = sqlIntanceReplicaIP
                         env.REDIS_IP = redisIP
                     }
                 }
@@ -236,6 +236,10 @@ pipeline {
                 sh '''
                     kubectl create secret generic database-ip \
                         --from-literal=DATABASE_IP=${SQL_INSTANCE_IP}
+                '''
+                sh '''
+                    kubectl create secret generic database-replica-ip \
+                        --from-literal=DATABASE_REPLICA_IP=${SQL_INSTANCE_REPLICA_IP}
                 '''
                 sh '''
                     kubectl create secret generic redis-ip \
