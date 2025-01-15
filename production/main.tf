@@ -306,7 +306,7 @@ resource "google_compute_instance" "scylla-node1" {
   tags = ["scylla-node1"]
   zone = "europe-west4-b"
 
-  depends_on = [ google_compute_router.scylla-router, google_compute_router_nat.scylla-nat ]
+  # depends_on = [ google_compute_router.scylla-router, google_compute_router_nat.scylla-nat ]
 }
 
 resource "google_compute_instance" "scylla-node2" {
@@ -374,7 +374,7 @@ resource "google_compute_instance" "scylla-node2" {
   tags = ["scylla-node2"]
   zone = "europe-west4-b"
 
-  depends_on = [ google_compute_router.scylla-router, google_compute_router_nat.scylla-nat ]
+  # depends_on = [ google_compute_router.scylla-router, google_compute_router_nat.scylla-nat ]
 }
 ////
 
