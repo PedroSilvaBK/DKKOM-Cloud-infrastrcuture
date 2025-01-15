@@ -27,7 +27,7 @@ pipeline {
             steps {
                 dir("production") {
                     echo 'Initializing Terraform for production'
-                    sh 'terraform init -reconfigure'
+                    sh 'terraform init'
                 }
             }
         }
