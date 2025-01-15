@@ -10,237 +10,237 @@ provider "google" {
   region  = "europe-west1"
 }
 
-# resource "google_redis_instance" "redis_instance" {
-#   name            = "redis"
-#   tier            = "BASIC"         # Equivalent to --tier=basic
-#   memory_size_gb  = 8               # --size=8
-#   region          = "europe-west1"
-#   redis_version   = "REDIS_7_0"     # Equivalent to --redis-version=redis_7_0
+resource "google_redis_instance" "redis_instance" {
+  name            = "redis"
+  tier            = "BASIC"         # Equivalent to --tier=basic
+  memory_size_gb  = 8               # --size=8
+  region          = "europe-west1"
+  redis_version   = "REDIS_7_0"     # Equivalent to --redis-version=redis_7_0
 
-#   connect_mode    = "PRIVATE_SERVICE_ACCESS"  # Equivalent to --connect-mode=PRIVATE_SERVICE_ACCESS
+  connect_mode    = "PRIVATE_SERVICE_ACCESS"  # Equivalent to --connect-mode=PRIVATE_SERVICE_ACCESS
 
-#   authorized_network = "projects/dkkom-446515/global/networks/default" # Network configuration
-# }
+  authorized_network = "projects/dkkom-446515/global/networks/default" # Network configuration
+}
 
-# resource "google_compute_router" "cluster_router" {
-#   name    = "cluster-router"
-#   network = "default"
-#   region  = "europe-west1"
-# }
+resource "google_compute_router" "cluster_router" {
+  name    = "cluster-router"
+  network = "default"
+  region  = "europe-west1"
+}
 
-# resource "google_compute_router_nat" "cluster_nat" {
-#   name   = "cluster-nat"
-#   router = google_compute_router.cluster_router.name
-#   region = google_compute_router.cluster_router.region
+resource "google_compute_router_nat" "cluster_nat" {
+  name   = "cluster-nat"
+  router = google_compute_router.cluster_router.name
+  region = google_compute_router.cluster_router.region
 
-#   nat_ip_allocate_option    = "AUTO_ONLY"  # Equivalent to --auto-allocate-nat-external-ips
-#   source_subnetwork_ip_ranges_to_nat = "ALL_SUBNETWORKS_ALL_IP_RANGES"  # Equivalent to --nat-all-subnet-ip-ranges
+  nat_ip_allocate_option    = "AUTO_ONLY"  # Equivalent to --auto-allocate-nat-external-ips
+  source_subnetwork_ip_ranges_to_nat = "ALL_SUBNETWORKS_ALL_IP_RANGES"  # Equivalent to --nat-all-subnet-ip-ranges
 
-#   min_ports_per_vm = 64
-#   log_config {
-#     enable = false
-#     filter = "ERRORS_ONLY"
-#   }
-# }
+  min_ports_per_vm = 64
+  log_config {
+    enable = false
+    filter = "ERRORS_ONLY"
+  }
+}
 
-# resource "google_container_cluster" "dcom_cluster" {
-#   name                   = "dcom-cluster"
-#   location               = "europe-west1-b"
-#   network                = "projects/dkkom-446515/global/networks/default"
-#   subnetwork             = "projects/dkkom-446515/regions/europe-west1/subnetworks/default"
+resource "google_container_cluster" "dcom_cluster" {
+  name                   = "dcom-cluster"
+  location               = "europe-west1-b"
+  network                = "projects/dkkom-446515/global/networks/default"
+  subnetwork             = "projects/dkkom-446515/regions/europe-west1/subnetworks/default"
 
-#   remove_default_node_pool = true
-#   initial_node_count       = 1
+  remove_default_node_pool = true
+  initial_node_count       = 1
 
-#   # Release channel configuration
-#   release_channel {
-#     channel = "RAPID"
-#   }
+  # Release channel configuration
+  release_channel {
+    channel = "RAPID"
+  }
 
-#   # IP alias and private nodes
-#   private_cluster_config {
-#     enable_private_nodes = true
-#   }
+  # IP alias and private nodes
+  private_cluster_config {
+    enable_private_nodes = true
+  }
 
-#   # Addons configuration
-#   addons_config {
-#     horizontal_pod_autoscaling {
-#       disabled = false
-#     }
-#     http_load_balancing {
-#       disabled = false
-#     }
-#   }
+  # Addons configuration
+  addons_config {
+    horizontal_pod_autoscaling {
+      disabled = false
+    }
+    http_load_balancing {
+      disabled = false
+    }
+  }
 
-#   # Default pods per node
-#   default_max_pods_per_node = 30
+  # Default pods per node
+  default_max_pods_per_node = 30
 
-#   # Security posture and features
-#   security_posture_config {
-#     mode = "BASIC"
-#   }
-#   enable_shielded_nodes = true
+  # Security posture and features
+  security_posture_config {
+    mode = "BASIC"
+  }
+  enable_shielded_nodes = true
 
-#   # Monitoring and logging
-#   monitoring_config {
-#     managed_prometheus {
-#       enabled = true
-#     }
-#     enable_components = ["SYSTEM_COMPONENTS", "HPA", "APISERVER", "POD", "KUBELET", "DEPLOYMENT", "CADVISOR"]
-#   }
+  # Monitoring and logging
+  monitoring_config {
+    managed_prometheus {
+      enabled = true
+    }
+    enable_components = ["SYSTEM_COMPONENTS", "HPA", "APISERVER", "POD", "KUBELET", "DEPLOYMENT", "CADVISOR"]
+  }
 
-#   deletion_protection = false
+  deletion_protection = false
 
-#   workload_identity_config {
-#     workload_pool = "dkkom-446515.svc.id.goog"
-#   }
+  workload_identity_config {
+    workload_pool = "dkkom-446515.svc.id.goog"
+  }
 
-#   secret_manager_config {
-#     enabled = true
-#   }
-# }
+  secret_manager_config {
+    enabled = true
+  }
+}
 
-# # Define a separate node pool
-# resource "google_container_node_pool" "default_node_pool" {
-#   cluster    = google_container_cluster.dcom_cluster.name
-#   location   = google_container_cluster.dcom_cluster.location
-#   node_count = 4
+# Define a separate node pool
+resource "google_container_node_pool" "default_node_pool" {
+  cluster    = google_container_cluster.dcom_cluster.name
+  location   = google_container_cluster.dcom_cluster.location
+  node_count = 4
 
-#   node_config {
-#     machine_type = "e2-standard-2"
-#     disk_type    = "pd-balanced"
-#     disk_size_gb = 20
-#     image_type   = "COS_CONTAINERD"
-#     metadata = {
-#       disable-legacy-endpoints = "true"
-#     }
-#     oauth_scopes = [
-#       "https://www.googleapis.com/auth/devstorage.read_only",
-#       "https://www.googleapis.com/auth/logging.write",
-#       "https://www.googleapis.com/auth/monitoring",
-#       "https://www.googleapis.com/auth/servicecontrol",
-#       "https://www.googleapis.com/auth/service.management.readonly",
-#       "https://www.googleapis.com/auth/trace.append",
-#     ]
-#   }
+  node_config {
+    machine_type = "e2-standard-2"
+    disk_type    = "pd-balanced"
+    disk_size_gb = 20
+    image_type   = "COS_CONTAINERD"
+    metadata = {
+      disable-legacy-endpoints = "true"
+    }
+    oauth_scopes = [
+      "https://www.googleapis.com/auth/devstorage.read_only",
+      "https://www.googleapis.com/auth/logging.write",
+      "https://www.googleapis.com/auth/monitoring",
+      "https://www.googleapis.com/auth/servicecontrol",
+      "https://www.googleapis.com/auth/service.management.readonly",
+      "https://www.googleapis.com/auth/trace.append",
+    ]
+  }
 
-#   management {
-#     auto_upgrade = true
-#     auto_repair  = true
-#   }
+  management {
+    auto_upgrade = true
+    auto_repair  = true
+  }
 
-#   upgrade_settings {
-#     max_surge       = 1
-#     max_unavailable = 0
-#   }
-# }
+  upgrade_settings {
+    max_surge       = 1
+    max_unavailable = 0
+  }
+}
 
-# resource "google_sql_database_instance" "default" {
-#   name             = "cave-service-sql"
-#   database_version = "MYSQL_8_0"
-#   region           = "europe-west1"
+resource "google_sql_database_instance" "default" {
+  name             = "cave-service-sql"
+  database_version = "MYSQL_8_0"
+  region           = "europe-west1"
 
-#   timeouts {
-#     create = "30m"
-#     update = "30m"
-#     delete = "30m"
-#   }
+  timeouts {
+    create = "30m"
+    update = "30m"
+    delete = "30m"
+  }
 
-#   settings {
-#     tier       = "db-custom-4-16384" # 4 vCPUs, 16 GB RAM
-#     disk_size  = 20                 # 20 GB
-#     disk_type  = "PD_SSD"           # SSD Storage
-#     availability_type = "ZONAL"     # Single Zone
+  settings {
+    tier       = "db-custom-4-16384" # 4 vCPUs, 16 GB RAM
+    disk_size  = 20                 # 20 GB
+    disk_type  = "PD_SSD"           # SSD Storage
+    availability_type = "ZONAL"     # Single Zone
 
-#     ip_configuration {
-#       private_network = "projects/dkkom-446515/global/networks/default" # Private VPC Network
-#       ipv4_enabled    = false
-#     }
+    ip_configuration {
+      private_network = "projects/dkkom-446515/global/networks/default" # Private VPC Network
+      ipv4_enabled    = false
+    }
 
-#     backup_configuration {
-#       enabled = true # Automated backups disabled
-#       binary_log_enabled = true
-#     }
+    backup_configuration {
+      enabled = true # Automated backups disabled
+      binary_log_enabled = true
+    }
 
     
-#   }
+  }
 
-#   deletion_protection = false # Enable deletion protection
+  deletion_protection = false # Enable deletion protection
 
-# }
+}
 
-# resource "google_sql_database_instance" "read_replica" {
-#   name             = "cave-service-sql-replica"
-#   master_instance_name = google_sql_database_instance.default.name
-#   database_version = "MYSQL_8_0"
-#   region           = "europe-west1"
+resource "google_sql_database_instance" "read_replica" {
+  name             = "cave-service-sql-replica"
+  master_instance_name = google_sql_database_instance.default.name
+  database_version = "MYSQL_8_0"
+  region           = "europe-west1"
 
-#   timeouts {
-#     create = "30m"
-#     update = "30m"
-#     delete = "30m"
-#   }
+  timeouts {
+    create = "30m"
+    update = "30m"
+    delete = "30m"
+  }
 
-#     replica_configuration {
-#     failover_target = false
-#   }
+    replica_configuration {
+    failover_target = false
+  }
 
-#   settings {
-#     tier       = "db-custom-4-16384" # Match primary instance size
-#     disk_size  = 20                 # Match primary instance disk size
-#     disk_type  = "PD_SSD"           # Match primary instance storage type
-#     availability_type = "ZONAL"     # Match primary instance availability
+  settings {
+    tier       = "db-custom-4-16384" # Match primary instance size
+    disk_size  = 20                 # Match primary instance disk size
+    disk_type  = "PD_SSD"           # Match primary instance storage type
+    availability_type = "ZONAL"     # Match primary instance availability
 
-#     ip_configuration {
-#       private_network = "projects/dkkom-446515/global/networks/default" # Same private VPC network
-#       ipv4_enabled    = false
-#     }
-#   }
+    ip_configuration {
+      private_network = "projects/dkkom-446515/global/networks/default" # Same private VPC network
+      ipv4_enabled    = false
+    }
+  }
 
-#   deletion_protection = false # Enable or disable deletion protection
-# }
+  deletion_protection = false # Enable or disable deletion protection
+}
 
 
-# resource "google_sql_database" "additional_databases" {
-#   for_each = toset(["cave_db", "users_db"]) # Replace with your database names
-#   name     = each.value
-#   instance = google_sql_database_instance.default.name
-#   charset  = "utf8"
-#   collation = "utf8_general_ci"
+resource "google_sql_database" "additional_databases" {
+  for_each = toset(["cave_db", "users_db"]) # Replace with your database names
+  name     = each.value
+  instance = google_sql_database_instance.default.name
+  charset  = "utf8"
+  collation = "utf8_general_ci"
 
-#   depends_on = [ google_sql_database_instance.default ]
-# }
+  depends_on = [ google_sql_database_instance.default ]
+}
 
-# resource "google_sql_user" "root" {
-#   instance   = google_sql_database_instance.default.name
-#   name       = "root"
-#   password   = "admin" # Replace with your actual password
-#   host       = "%"
+resource "google_sql_user" "root" {
+  instance   = google_sql_database_instance.default.name
+  name       = "root"
+  password   = "admin" # Replace with your actual password
+  host       = "%"
 
-#   depends_on = [ google_sql_database_instance.default ]
-# }
+  depends_on = [ google_sql_database_instance.default ]
+}
 
 // scyla db vms
-# resource "google_compute_router" "scylla-router" {
-#   name    = "scylla-router"
-#   network = "default"
-#   region  = "europe-west4"
-# }
+resource "google_compute_router" "scylla-router" {
+  name    = "scylla-router"
+  network = "default"
+  region  = "europe-west4"
+}
 
-# resource "google_compute_router_nat" "scylla-nat" {
-#   name   = "scylla-nat"
-#   router = google_compute_router.scylla-router.name
-#   region = google_compute_router.scylla-router.region
+resource "google_compute_router_nat" "scylla-nat" {
+  name   = "scylla-nat"
+  router = google_compute_router.scylla-router.name
+  region = google_compute_router.scylla-router.region
 
-#   nat_ip_allocate_option    = "AUTO_ONLY"  # Equivalent to --auto-allocate-nat-external-ips
-#   source_subnetwork_ip_ranges_to_nat = "ALL_SUBNETWORKS_ALL_IP_RANGES"  # Equivalent to --nat-all-subnet-ip-ranges
+  nat_ip_allocate_option    = "AUTO_ONLY"  # Equivalent to --auto-allocate-nat-external-ips
+  source_subnetwork_ip_ranges_to_nat = "ALL_SUBNETWORKS_ALL_IP_RANGES"  # Equivalent to --nat-all-subnet-ip-ranges
 
-#   min_ports_per_vm = 64
-#   log_config {
-#     enable = false
-#     filter = "ERRORS_ONLY"
-#   }
-# }
+  min_ports_per_vm = 64
+  log_config {
+    enable = false
+    filter = "ERRORS_ONLY"
+  }
+}
 
 resource "google_compute_instance" "scylla-node1" {
   boot_disk {
@@ -306,7 +306,7 @@ resource "google_compute_instance" "scylla-node1" {
   tags = ["scylla-node1"]
   zone = "europe-west4-b"
 
-  # depends_on = [ google_compute_router.scylla-router, google_compute_router_nat.scylla-nat ]
+  depends_on = [ google_compute_router.scylla-router, google_compute_router_nat.scylla-nat ]
 }
 
 resource "google_compute_instance" "scylla-node2" {
@@ -374,27 +374,27 @@ resource "google_compute_instance" "scylla-node2" {
   tags = ["scylla-node2"]
   zone = "europe-west4-b"
 
-  # depends_on = [ google_compute_router.scylla-router, google_compute_router_nat.scylla-nat ]
+  depends_on = [ google_compute_router.scylla-router, google_compute_router_nat.scylla-nat ]
 }
 ////
 
-# output "sql_instance_connection_name" {
-#   value = google_sql_database_instance.default.connection_name
-# }
+output "sql_instance_connection_name" {
+  value = google_sql_database_instance.default.connection_name
+}
 
 
-# output "sql_instance_ip" {
-#   value = google_sql_database_instance.default.ip_address[0].ip_address
-#   description = "Private IP of the SQL instance"
-# }
+output "sql_instance_ip" {
+  value = google_sql_database_instance.default.ip_address[0].ip_address
+  description = "Private IP of the SQL instance"
+}
 
-# output "sql_instance_ip_replica" {
-#   value = google_sql_database_instance.read_replica.ip_address[0].ip_address
-#   description = "Private IP of the replica SQL instance"
-# }
+output "sql_instance_replica_ip" {
+  value = google_sql_database_instance.read_replica.ip_address[0].ip_address
+  description = "Private IP of the replica SQL instance"
+}
 
 
-# output "redis_ip" {
-#   value = google_redis_instance.redis_instance.host
-#   description = "Private IP of the Redis instance"
-# }
+output "redis_ip" {
+  value = google_redis_instance.redis_instance.host
+  description = "Private IP of the Redis instance"
+}
