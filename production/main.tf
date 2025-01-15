@@ -104,7 +104,7 @@ resource "google_container_cluster" "dcom_cluster" {
 resource "google_container_node_pool" "default_node_pool" {
   cluster    = google_container_cluster.dcom_cluster.name
   location   = google_container_cluster.dcom_cluster.location
-  node_count = 4
+  node_count = 3
 
   node_config {
     machine_type = "e2-standard-2"
@@ -244,7 +244,7 @@ resource "google_compute_router_nat" "scylla-nat" {
 
 resource "google_compute_instance" "scylla-node1" {
   allow_stopping_for_update = true
-  
+
   boot_disk {
     auto_delete = true
     device_name = "scylla-node1"

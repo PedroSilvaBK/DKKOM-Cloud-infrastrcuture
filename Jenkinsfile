@@ -27,7 +27,7 @@ pipeline {
             steps {
                 dir("production") {
                     echo 'Initializing Terraform for production'
-                    sh 'terraform init -reconfigure'
+                    sh 'terraform init'
                 }
             }
         }
@@ -128,15 +128,6 @@ pipeline {
                     echo 'Destroying Terraform for Staging'
                     sh 'terraform destroy -auto-approve'
                 }
-            }
-        }
-        stage('Stop ScyllaDB Prod') {
-            when {
-                expression { params.ACTION == 'destroy-prod' }
-            }
-            steps {
-                sh 'gcloud compute instances stop scylla-node1 --zone=europe-west4-b'
-                sh 'gcloud compute instances stop scylla-node2 --zone=europe-west4-b'
             }
         }
         stage('Stop Turn Server Prod') {
