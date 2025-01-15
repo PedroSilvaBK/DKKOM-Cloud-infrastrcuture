@@ -219,8 +219,10 @@ pipeline {
             steps {
                 sh 'gcloud compute ssh scylla-node2 --zone=europe-west4-b --command "ls -la"'
                 dir('scylla-db-configuration') {
-                    sh 'gcloud compute scp ./node-1-config/scylla.yaml scylla-node1:/etc/scylla/scylla.yaml --zone=europe-west4-b'
-                    sh 'gcloud compute scp ./node-2-config/scylla.yaml scylla-node2:/etc/scylla/scylla.yaml --zone=europe-west4-b'
+                    sh 'gcloud compute scp ./node-1-config/scylla.yaml scylla-node1:/tmp/scylla.yaml --zone=europe-west4-b'
+                    sh 'gcloud compute ssh scylla-node1 --zone=europe-west4-b --command="sudo mv /tmp/scylla.yaml /etc/scylla/scylla.yaml && sudo chown root:root /etc/scylla/scylla.yaml"'
+                    sh 'gcloud compute scp ./node-2-config/scylla.yaml scylla-node2:/tmp/scylla.yaml --zone=europe-west4-b'
+                    sh 'gcloud compute ssh scylla-node2 --zone=europe-west4-b --command="sudo mv /tmp/scylla.yaml /etc/scylla/scylla.yaml && sudo chown root:root /etc/scylla/scylla.yaml"'
                 }
                 sh 'echo setting up first node'
 
