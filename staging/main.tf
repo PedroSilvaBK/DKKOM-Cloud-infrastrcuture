@@ -219,13 +219,48 @@ resource "google_sql_database_instance" "default" {
     }
 
     backup_configuration {
-      enabled = false # Automated backups disabled
+      enabled = true # Automated backups disabled
+      binary_log_enabled = true
     }
+
+    
   }
 
   deletion_protection = false # Enable deletion protection
 
 }
+
+resource "google_sql_database_instance" "read_replica" {
+  name             = "cave-service-sql-replica"
+  master_instance_name = google_sql_database_instance.default.name
+  database_version = "MYSQL_8_0"
+  region           = "europe-west1"
+
+  timeouts {
+    create = "30m"
+    update = "30m"
+    delete = "30m"
+  }
+
+    replica_configuration {
+    failover_target = false
+  }
+
+  settings {
+    tier       = "db-custom-4-16384" # Match primary instance size
+    disk_size  = 20                 # Match primary instance disk size
+    disk_type  = "PD_SSD"           # Match primary instance storage type
+    availability_type = "ZONAL"     # Match primary instance availability
+
+    ip_configuration {
+      private_network = "projects/dkkom-446515/global/networks/default" # Same private VPC network
+      ipv4_enabled    = false
+    }
+  }
+
+  deletion_protection = false # Enable or disable deletion protection
+}
+
 
 resource "google_sql_database" "additional_databases" {
   for_each = toset(["cave_db", "users_db"]) # Replace with your database names
@@ -254,6 +289,11 @@ output "sql_instance_connection_name" {
 output "sql_instance_ip" {
   value = google_sql_database_instance.default.ip_address[0].ip_address
   description = "Private IP of the SQL instance"
+}
+
+output "sql_instance_ip_replica" {
+  value = google_sql_database_instance.read_replica.ip_address[0].ip_address
+  description = "Private IP of the replica SQL instance"
 }
 
 output "redis_ip" {
