@@ -20,49 +20,49 @@ pipeline {
                 }
             }
         }
-        stage('Terraform Init Production') {
-            when {
-                expression { params.ACTION == 'create-prod' }
-            }
-            steps {
-                dir("production") {
-                    echo 'Initializing Terraform for production'
-                    sh 'terraform init -reconfigure'
-                }
-            }
-        }
-        stage('Terraform Plan Production') {
-            when {
-                expression { params.ACTION == 'create-prod' }
-            }
-            steps {
-                dir("production") {
-                    echo 'Planning Terraform for production'
-                    sh 'terraform plan'
-                }
-            }
-        }
-        stage('Terraform Apply Production') {
-            when {
-                expression { params.ACTION == 'create-prod' }
-            }
-            steps {
-                dir('production') {
-                    echo 'Applying Terraform'
-                    sh 'terraform apply -auto-approve'
+        // stage('Terraform Init Production') {
+        //     when {
+        //         expression { params.ACTION == 'create-prod' }
+        //     }
+        //     steps {
+        //         dir("production") {
+        //             echo 'Initializing Terraform for production'
+        //             sh 'terraform init -reconfigure'
+        //         }
+        //     }
+        // }
+        // stage('Terraform Plan Production') {
+        //     when {
+        //         expression { params.ACTION == 'create-prod' }
+        //     }
+        //     steps {
+        //         dir("production") {
+        //             echo 'Planning Terraform for production'
+        //             sh 'terraform plan'
+        //         }
+        //     }
+        // }
+        // stage('Terraform Apply Production') {
+        //     when {
+        //         expression { params.ACTION == 'create-prod' }
+        //     }
+        //     steps {
+        //         dir('production') {
+        //             echo 'Applying Terraform'
+        //             sh 'terraform apply -auto-approve'
 
-                    // Capture Terraform outputs
-                    script {
-                        def sqlInstanceIP = sh(script: 'terraform output -raw sql_instance_ip', returnStdout: true).trim()
-                        def redisIP = sh(script: 'terraform output -raw redis_ip', returnStdout: true).trim()
+        //             // Capture Terraform outputs
+        //             script {
+        //                 def sqlInstanceIP = sh(script: 'terraform output -raw sql_instance_ip', returnStdout: true).trim()
+        //                 def redisIP = sh(script: 'terraform output -raw redis_ip', returnStdout: true).trim()
 
-                        // Set environment variables for Kubernetes secrets creation
-                        env.SQL_INSTANCE_IP = sqlInstanceIP
-                        env.REDIS_IP = redisIP
-                    }
-                }
-            }
-        }
+        //                 // Set environment variables for Kubernetes secrets creation
+        //                 env.SQL_INSTANCE_IP = sqlInstanceIP
+        //                 env.REDIS_IP = redisIP
+        //             }
+        //         }
+        //     }
+        // }
         stage('Terraform Destroy Production') {
             when {
                 expression { params.ACTION == 'destroy-prod' }
