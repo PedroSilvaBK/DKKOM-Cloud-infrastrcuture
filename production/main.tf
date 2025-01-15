@@ -243,6 +243,8 @@ resource "google_compute_router_nat" "scylla-nat" {
 }
 
 resource "google_compute_instance" "scylla-node1" {
+  allow_stopping_for_update = true
+  
   boot_disk {
     auto_delete = true
     device_name = "scylla-node1"
@@ -310,6 +312,8 @@ resource "google_compute_instance" "scylla-node1" {
 }
 
 resource "google_compute_instance" "scylla-node2" {
+  allow_stopping_for_update = true
+
   boot_disk {
     auto_delete = true
     device_name = "scylla-node2"
