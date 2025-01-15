@@ -221,26 +221,26 @@ provider "google" {
 # }
 
 // scyla db vms
-resource "google_compute_router" "scylla-router" {
-  name    = "scylla-router"
-  network = "default"
-  region  = "europe-west4"
-}
+# resource "google_compute_router" "scylla-router" {
+#   name    = "scylla-router"
+#   network = "default"
+#   region  = "europe-west4"
+# }
 
-resource "google_compute_router_nat" "scylla-nat" {
-  name   = "scylla-nat"
-  router = google_compute_router.scylla-router.name
-  region = google_compute_router.scylla-router.region
+# resource "google_compute_router_nat" "scylla-nat" {
+#   name   = "scylla-nat"
+#   router = google_compute_router.scylla-router.name
+#   region = google_compute_router.scylla-router.region
 
-  nat_ip_allocate_option    = "AUTO_ONLY"  # Equivalent to --auto-allocate-nat-external-ips
-  source_subnetwork_ip_ranges_to_nat = "ALL_SUBNETWORKS_ALL_IP_RANGES"  # Equivalent to --nat-all-subnet-ip-ranges
+#   nat_ip_allocate_option    = "AUTO_ONLY"  # Equivalent to --auto-allocate-nat-external-ips
+#   source_subnetwork_ip_ranges_to_nat = "ALL_SUBNETWORKS_ALL_IP_RANGES"  # Equivalent to --nat-all-subnet-ip-ranges
 
-  min_ports_per_vm = 64
-  log_config {
-    enable = false
-    filter = "ERRORS_ONLY"
-  }
-}
+#   min_ports_per_vm = 64
+#   log_config {
+#     enable = false
+#     filter = "ERRORS_ONLY"
+#   }
+# }
 
 resource "google_compute_instance" "scylla-node1" {
   boot_disk {
