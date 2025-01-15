@@ -127,6 +127,23 @@ pipeline {
                 }
             }
         }
+        stage('Stop ScyllaDB Prod') {
+            when {
+                expression { params.ACTION == 'destroy-prod' }
+            }
+            steps {
+                sh 'gcloud compute instances stop scylla-node1 --zone=europe-west4-b'
+                sh 'gcloud compute instances stop scylla-node2 --zone=europe-west4-b'
+            }
+        }
+        stage('Stop Turn Server Prod') {
+            when {
+                expression { params.ACTION == 'destroy-prod' }
+            }
+            steps {
+                sh 'gcloud compute instances stop turn-server --zone=europe-west1-d'
+            }
+        }
         stage('Get Cluster Credentials') {
             when {
                 expression { params.ACTION == 'create-prod' || params.ACTION == 'create-staging' }
@@ -186,6 +203,23 @@ pipeline {
                 sh 'kubectl apply -f message-service-schylladb.yaml'
             }
         }
+        stage('Start Turn Server Prod') {
+            when {
+                expression { params.ACTION == 'create-prod' }
+            }
+            steps {
+                sh 'gcloud compute instances start turn-server --zone=europe-west1-d'
+            }
+        }
+        stage('Start Scylla DB Prod') {
+            when {
+                expression { params.ACTION == 'create-prod' }
+            }
+            steps {
+                sh 'gcloud compute instances start scylla-node1 --zone=europe-west4-b'
+                sh 'gcloud compute instances start scylla-node2 --zone=europe-west4-b'
+            }
+        }
         stage('Create Kubernetes Secrets') {
             when {
                 expression { params.ACTION == 'create-prod' || params.ACTION == 'create-staging' }
@@ -225,9 +259,9 @@ pipeline {
                 }
             }
         }
-        stage('setup scylla') {
+        stage('setup scylla staging') {
             when {
-                expression { params.ACTION == 'create-prod' || params.ACTION == 'create-staging' }
+                expression { params.ACTION == 'create-staging' }
             }
             steps {
                 sh 'kubectl exec -it scylla-0 -- cqlsh -e "CREATE KEYSPACE IF NOT EXISTS message_space WITH REPLICATION = {\'class\': \'SimpleStrategy\', \'replication_factor\': 3};"'
