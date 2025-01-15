@@ -20,49 +20,49 @@ pipeline {
                 }
             }
         }
-        // stage('Terraform Init Production') {
-        //     when {
-        //         expression { params.ACTION == 'create-prod' }
-        //     }
-        //     steps {
-        //         dir("production") {
-        //             echo 'Initializing Terraform for production'
-        //             sh 'terraform init -reconfigure'
-        //         }
-        //     }
-        // }
-        // stage('Terraform Plan Production') {
-        //     when {
-        //         expression { params.ACTION == 'create-prod' }
-        //     }
-        //     steps {
-        //         dir("production") {
-        //             echo 'Planning Terraform for production'
-        //             sh 'terraform plan'
-        //         }
-        //     }
-        // }
-        // stage('Terraform Apply Production') {
-        //     when {
-        //         expression { params.ACTION == 'create-prod' }
-        //     }
-        //     steps {
-        //         dir('production') {
-        //             echo 'Applying Terraform'
-        //             sh 'terraform apply -auto-approve'
+        stage('Terraform Init Production') {
+            when {
+                expression { params.ACTION == 'create-prod' }
+            }
+            steps {
+                dir("production") {
+                    echo 'Initializing Terraform for production'
+                    sh 'terraform init -reconfigure'
+                }
+            }
+        }
+        stage('Terraform Plan Production') {
+            when {
+                expression { params.ACTION == 'create-prod' }
+            }
+            steps {
+                dir("production") {
+                    echo 'Planning Terraform for production'
+                    sh 'terraform plan'
+                }
+            }
+        }
+        stage('Terraform Apply Production') {
+            when {
+                expression { params.ACTION == 'create-prod' }
+            }
+            steps {
+                dir('production') {
+                    echo 'Applying Terraform'
+                    sh 'terraform apply -auto-approve'
 
-        //             Capture Terraform outputs
-        //             script {
-        //                 def sqlInstanceIP = sh(script: 'terraform output -raw sql_instance_ip', returnStdout: true).trim()
-        //                 def redisIP = sh(script: 'terraform output -raw redis_ip', returnStdout: true).trim()
+                    Capture Terraform outputs
+                    script {
+                        def sqlInstanceIP = sh(script: 'terraform output -raw sql_instance_ip', returnStdout: true).trim()
+                        def redisIP = sh(script: 'terraform output -raw redis_ip', returnStdout: true).trim()
 
-        //                 // Set environment variables for Kubernetes secrets creation
-        //                 env.SQL_INSTANCE_IP = sqlInstanceIP
-        //                 env.REDIS_IP = redisIP
-        //             }
-        //         }
-        //     }
-        // }
+                        // Set environment variables for Kubernetes secrets creation
+                        env.SQL_INSTANCE_IP = sqlInstanceIP
+                        env.REDIS_IP = redisIP
+                    }
+                }
+            }
+        }
         stage('Terraform Destroy Production') {
             when {
                 expression { params.ACTION == 'destroy-prod' }
@@ -217,16 +217,16 @@ pipeline {
                 expression { params.ACTION == 'create-prod' }
             }
             steps {
-                // sh 'gcloud compute ssh scylla-node2 --zone=europe-west4-b --command "ls -la"'
-                // dir('scylla-db-configuration') {
-                //     sh 'gcloud compute scp ./node-1-config/scylla.yaml scylla-node1:/tmp/scylla.yaml --zone=europe-west4-b'
-                //     sh 'gcloud compute ssh scylla-node1 --zone=europe-west4-b --command="sudo mv /tmp/scylla.yaml /etc/scylla/scylla.yaml && sudo chown root:root /etc/scylla/scylla.yaml"'
-                //     sh 'gcloud compute scp ./node-2-config/scylla.yaml scylla-node2:/tmp/scylla.yaml --zone=europe-west4-b'
-                //     sh 'gcloud compute ssh scylla-node2 --zone=europe-west4-b --command="sudo mv /tmp/scylla.yaml /etc/scylla/scylla.yaml && sudo chown root:root /etc/scylla/scylla.yaml"'
-                // }
+                sh 'gcloud compute ssh scylla-node2 --zone=europe-west4-b --command "ls -la"'
+                dir('scylla-db-configuration') {
+                    sh 'gcloud compute scp ./node-1-config/scylla.yaml scylla-node1:/tmp/scylla.yaml --zone=europe-west4-b'
+                    sh 'gcloud compute ssh scylla-node1 --zone=europe-west4-b --command="sudo mv /tmp/scylla.yaml /etc/scylla/scylla.yaml && sudo chown root:root /etc/scylla/scylla.yaml"'
+                    sh 'gcloud compute scp ./node-2-config/scylla.yaml scylla-node2:/tmp/scylla.yaml --zone=europe-west4-b'
+                    sh 'gcloud compute ssh scylla-node2 --zone=europe-west4-b --command="sudo mv /tmp/scylla.yaml /etc/scylla/scylla.yaml && sudo chown root:root /etc/scylla/scylla.yaml"'
+                }
                 sh 'echo setting up first node'
 
-                // sh 'gcloud compute ssh scylla-node1 --zone=europe-west4-b --command "sudo scylla_setup --no-raid-setup --online-discard 1 --nic ens4 --no-coredump-setup --io-setup 1 --no-fstrim-setup --no-rsyslog-setup"'
+                sh 'gcloud compute ssh scylla-node1 --zone=europe-west4-b --command "sudo scylla_setup --no-raid-setup --online-discard 1 --nic ens4 --no-coredump-setup --io-setup 1 --no-fstrim-setup --no-rsyslog-setup"'
                 sh 'gcloud compute ssh scylla-node1 --zone=europe-west4-b --command "sudo systemctl start scylla-server"'
 
                 sh 'echo setting up second node'

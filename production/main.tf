@@ -135,90 +135,90 @@ provider "google" {
 #   }
 # }
 
-resource "google_sql_database_instance" "default" {
-  name             = "cave-service-sql"
-  database_version = "MYSQL_8_0"
-  region           = "europe-west1"
+# resource "google_sql_database_instance" "default" {
+#   name             = "cave-service-sql"
+#   database_version = "MYSQL_8_0"
+#   region           = "europe-west1"
 
-  timeouts {
-    create = "30m"
-    update = "30m"
-    delete = "30m"
-  }
+#   timeouts {
+#     create = "30m"
+#     update = "30m"
+#     delete = "30m"
+#   }
 
-  settings {
-    tier       = "db-custom-4-16384" # 4 vCPUs, 16 GB RAM
-    disk_size  = 20                 # 20 GB
-    disk_type  = "PD_SSD"           # SSD Storage
-    availability_type = "ZONAL"     # Single Zone
+#   settings {
+#     tier       = "db-custom-4-16384" # 4 vCPUs, 16 GB RAM
+#     disk_size  = 20                 # 20 GB
+#     disk_type  = "PD_SSD"           # SSD Storage
+#     availability_type = "ZONAL"     # Single Zone
 
-    ip_configuration {
-      private_network = "projects/dkkom-446515/global/networks/default" # Private VPC Network
-      ipv4_enabled    = false
-    }
+#     ip_configuration {
+#       private_network = "projects/dkkom-446515/global/networks/default" # Private VPC Network
+#       ipv4_enabled    = false
+#     }
 
-    backup_configuration {
-      enabled = true # Automated backups disabled
-      binary_log_enabled = true
-    }
+#     backup_configuration {
+#       enabled = true # Automated backups disabled
+#       binary_log_enabled = true
+#     }
 
     
-  }
+#   }
 
-  deletion_protection = false # Enable deletion protection
+#   deletion_protection = false # Enable deletion protection
 
-}
+# }
 
-resource "google_sql_database_instance" "read_replica" {
-  name             = "cave-service-sql-replica"
-  master_instance_name = google_sql_database_instance.default.name
-  database_version = "MYSQL_8_0"
-  region           = "europe-west1"
+# resource "google_sql_database_instance" "read_replica" {
+#   name             = "cave-service-sql-replica"
+#   master_instance_name = google_sql_database_instance.default.name
+#   database_version = "MYSQL_8_0"
+#   region           = "europe-west1"
 
-  timeouts {
-    create = "30m"
-    update = "30m"
-    delete = "30m"
-  }
+#   timeouts {
+#     create = "30m"
+#     update = "30m"
+#     delete = "30m"
+#   }
 
-    replica_configuration {
-    failover_target = false
-  }
+#     replica_configuration {
+#     failover_target = false
+#   }
 
-  settings {
-    tier       = "db-custom-4-16384" # Match primary instance size
-    disk_size  = 20                 # Match primary instance disk size
-    disk_type  = "PD_SSD"           # Match primary instance storage type
-    availability_type = "ZONAL"     # Match primary instance availability
+#   settings {
+#     tier       = "db-custom-4-16384" # Match primary instance size
+#     disk_size  = 20                 # Match primary instance disk size
+#     disk_type  = "PD_SSD"           # Match primary instance storage type
+#     availability_type = "ZONAL"     # Match primary instance availability
 
-    ip_configuration {
-      private_network = "projects/dkkom-446515/global/networks/default" # Same private VPC network
-      ipv4_enabled    = false
-    }
-  }
+#     ip_configuration {
+#       private_network = "projects/dkkom-446515/global/networks/default" # Same private VPC network
+#       ipv4_enabled    = false
+#     }
+#   }
 
-  deletion_protection = false # Enable or disable deletion protection
-}
+#   deletion_protection = false # Enable or disable deletion protection
+# }
 
 
-resource "google_sql_database" "additional_databases" {
-  for_each = toset(["cave_db", "users_db"]) # Replace with your database names
-  name     = each.value
-  instance = google_sql_database_instance.default.name
-  charset  = "utf8"
-  collation = "utf8_general_ci"
+# resource "google_sql_database" "additional_databases" {
+#   for_each = toset(["cave_db", "users_db"]) # Replace with your database names
+#   name     = each.value
+#   instance = google_sql_database_instance.default.name
+#   charset  = "utf8"
+#   collation = "utf8_general_ci"
 
-  depends_on = [ google_sql_database_instance.default ]
-}
+#   depends_on = [ google_sql_database_instance.default ]
+# }
 
-resource "google_sql_user" "root" {
-  instance   = google_sql_database_instance.default.name
-  name       = "root"
-  password   = "admin" # Replace with your actual password
-  host       = "%"
+# resource "google_sql_user" "root" {
+#   instance   = google_sql_database_instance.default.name
+#   name       = "root"
+#   password   = "admin" # Replace with your actual password
+#   host       = "%"
 
-  depends_on = [ google_sql_database_instance.default ]
-}
+#   depends_on = [ google_sql_database_instance.default ]
+# }
 
 // scyla db vms
 resource "google_compute_router" "scylla-router" {
@@ -378,20 +378,20 @@ resource "google_compute_instance" "scylla-node2" {
 }
 ////
 
-output "sql_instance_connection_name" {
-  value = google_sql_database_instance.default.connection_name
-}
+# output "sql_instance_connection_name" {
+#   value = google_sql_database_instance.default.connection_name
+# }
 
 
-output "sql_instance_ip" {
-  value = google_sql_database_instance.default.ip_address[0].ip_address
-  description = "Private IP of the SQL instance"
-}
+# output "sql_instance_ip" {
+#   value = google_sql_database_instance.default.ip_address[0].ip_address
+#   description = "Private IP of the SQL instance"
+# }
 
-output "sql_instance_ip_replica" {
-  value = google_sql_database_instance.read_replica.ip_address[0].ip_address
-  description = "Private IP of the replica SQL instance"
-}
+# output "sql_instance_ip_replica" {
+#   value = google_sql_database_instance.read_replica.ip_address[0].ip_address
+#   description = "Private IP of the replica SQL instance"
+# }
 
 
 # output "redis_ip" {
