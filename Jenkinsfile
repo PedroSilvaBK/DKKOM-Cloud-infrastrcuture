@@ -226,13 +226,13 @@ pipeline {
                 // }
                 sh 'echo setting up first node'
 
-                sh 'gcloud compute ssh scylla-node1 --zone=europe-west4-b --command "sudo scylla_setup --no-raid-setup --online-discard 1 --nic ens4 --no-coredump-setup --io-setup 1 --no-fstrim-setup --no-rsyslog-setup"'
-                sh 'gcloud compute ssh scylla-node1 --zone=europe-west4-b --command "systemctl start scylla-server"'
+                // sh 'gcloud compute ssh scylla-node1 --zone=europe-west4-b --command "sudo scylla_setup --no-raid-setup --online-discard 1 --nic ens4 --no-coredump-setup --io-setup 1 --no-fstrim-setup --no-rsyslog-setup"'
+                sh 'gcloud compute ssh scylla-node1 --zone=europe-west4-b --command "sudo systemctl start scylla-server"'
 
                 sh 'echo setting up second node'
 
                 sh 'gcloud compute ssh scylla-node2 --zone=europe-west4-b --command "sudo scylla_setup --no-raid-setup --online-discard 1 --nic ens4 --no-coredump-setup --io-setup 1 --no-fstrim-setup --no-rsyslog-setup"'
-                sh 'gcloud compute ssh scylla-node2 --zone=europe-west4-b --command "systemctl start scylla-server"'
+                sh 'gcloud compute ssh scylla-node2 --zone=europe-west4-b --command "sudo systemctl start scylla-server"'
             }
         }
         // stage('Create Kubernetes Secrets') {
