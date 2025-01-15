@@ -170,12 +170,19 @@ pipeline {
                 '''
             }
         }
-        stage('Deploy Kafka and ScyllaDB') {
+        stage('Deploy Kafka') {
             when {
                 expression { params.ACTION == 'create-prod' || params.ACTION == 'create-staging' }
             }
             steps {
                 sh 'kubectl apply -f kafka.yaml'
+            }
+        }
+        stage('Deploy Scylla DB Staging') {
+            when {
+                expression { params.ACTION == 'create-staging' }
+            }
+            steps {
                 sh 'kubectl apply -f message-service-schylladb.yaml'
             }
         }
