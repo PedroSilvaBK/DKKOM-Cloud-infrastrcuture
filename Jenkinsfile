@@ -51,7 +51,7 @@ pipeline {
                     echo 'Applying Terraform'
                     sh 'terraform apply -auto-approve'
 
-                    Capture Terraform outputs
+                    // Capture Terraform outputs
                     script {
                         def sqlInstanceIP = sh(script: 'terraform output -raw sql_instance_ip', returnStdout: true).trim()
                         def redisIP = sh(script: 'terraform output -raw redis_ip', returnStdout: true).trim()
