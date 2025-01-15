@@ -268,7 +268,7 @@ resource "google_compute_instance" "scylla-node1" {
   name         = "scylla-node1"
 
   network_interface {
-    network_ip  = "10.164.0.7"
+    network_ip  = "10.164.0.2"
     queue_count = 0
     stack_type  = "IPV4_ONLY"
     subnetwork  = "projects/dkkom-446515/regions/europe-west4/subnetworks/default"
