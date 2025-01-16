@@ -229,7 +229,7 @@ pipeline {
                 sh 'gcloud compute ssh scylla-node2 --zone=europe-west4-b --command "sudo scylla_setup --no-raid-setup --online-discard 1 --nic ens4 --no-coredump-setup --io-setup 1 --no-fstrim-setup --no-rsyslog-setup"'
                 sh 'gcloud compute ssh scylla-node2 --zone=europe-west4-b --command "sudo systemctl start scylla-server"'
 
-                sh 'gcloud compute ssh scylla-node2 --zone=europe-west4-b --command 'cqlsh 10.164.0.2 -e "CREATE KEYSPACE message_space WITH replication = { '\''class'\'': '\''SimpleStrategy'\'', '\''replication_factor'\'': 2 };"''
+                // sh 'gcloud compute ssh scylla-node2 --zone=europe-west4-b --command 'cqlsh -e "CREATE KEYSPACE message_space WITH replication = { '\''class'\'': '\''SimpleStrategy'\'', '\''replication_factor'\'': 2 };"''
 
             }
         }
