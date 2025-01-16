@@ -12,8 +12,8 @@ provider "google" {
 
 resource "google_compute_instance" "performance_test_vm" {
   name         = "performance-test-vm"
-  machine_type = "e2-medium" # Adjust based on your load requirements
-  zone         = "europe-west1-b" # Same zone as your cluster for reduced latency
+  machine_type = "e2-standard-2" # Adjust based on your load requirements
+  zone         = "europe-west4-b" # Same zone as your cluster for reduced latency
 
   boot_disk {
     initialize_params {
