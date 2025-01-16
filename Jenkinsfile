@@ -111,9 +111,11 @@ pipeline {
                     script {
                         def sqlInstanceIP = sh(script: 'terraform output -raw sql_instance_ip', returnStdout: true).trim()
                         def redisIP = sh(script: 'terraform output -raw redis_ip', returnStdout: true).trim()
+                        def sqlIntanceReplicaIP = sh(script: 'terraform output -raw sql_instance_replica_ip', returnStdout: true).trim()
 
                         // Set environment variables for Kubernetes secrets creation
                         env.SQL_INSTANCE_IP = sqlInstanceIP
+                        env.SQL_INSTANCE_REPLICA_IP = sqlIntanceReplicaIP
                         env.REDIS_IP = redisIP
                     }
                 }
@@ -189,14 +191,14 @@ pipeline {
                 sh 'kubectl apply -f kafka.yaml'
             }
         }
-        stage('Deploy Scylla DB Staging') {
-            when {
-                expression { params.ACTION == 'create-staging' }
-            }
-            steps {
-                sh 'kubectl apply -f message-service-schylladb.yaml'
-            }
-        }
+        // stage('Deploy Scylla DB Staging') {
+        //     when {
+        //         expression { params.ACTION == 'create-staging' }
+        //     }
+        //     steps {
+        //         sh 'kubectl apply -f message-service-schylladb.yaml'
+        //     }
+        // }
         stage('Start Turn Server Prod') {
             when {
                 expression { params.ACTION == 'create-prod' }
@@ -226,6 +228,9 @@ pipeline {
 
                 sh 'gcloud compute ssh scylla-node2 --zone=europe-west4-b --command "sudo scylla_setup --no-raid-setup --online-discard 1 --nic ens4 --no-coredump-setup --io-setup 1 --no-fstrim-setup --no-rsyslog-setup"'
                 sh 'gcloud compute ssh scylla-node2 --zone=europe-west4-b --command "sudo systemctl start scylla-server"'
+
+                sh 'gcloud compute ssh scylla-node2 --zone=europe-west4-b --command 'cqlsh 10.164.0.2 -e "CREATE KEYSPACE message_space WITH replication = { '\''class'\'': '\''SimpleStrategy'\'', '\''replication_factor'\'': 2 };"''
+
             }
         }
         stage('Create Kubernetes Secrets') {
