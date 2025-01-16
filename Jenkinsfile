@@ -207,7 +207,7 @@ pipeline {
         }
         stage('Setup Scylla DB Prod') {
             when {
-                expression { params.ACTION == 'create-prod' }
+                expression { params.ACTION == 'create-prod' || params.ACTION == 'create-staging' }
             }
             steps {
                 sh 'gcloud compute ssh scylla-node2 --zone=europe-west4-b --command "ls -la"'
@@ -271,14 +271,14 @@ pipeline {
                 }
             }
         }
-        stage('setup scylla staging') {
-            when {
-                expression { params.ACTION == 'create-staging' }
-            }
-            steps {
-                sh 'kubectl exec -it scylla-0 -- cqlsh -e "CREATE KEYSPACE IF NOT EXISTS message_space WITH REPLICATION = {\'class\': \'SimpleStrategy\', \'replication_factor\': 3};"'
-            }
-        }
+        // stage('setup scylla staging') {
+        //     when {
+        //         expression { params.ACTION == 'create-staging' }
+        //     }
+        //     steps {
+        //         sh 'kubectl exec -it scylla-0 -- cqlsh -e "CREATE KEYSPACE IF NOT EXISTS message_space WITH REPLICATION = {\'class\': \'SimpleStrategy\', \'replication_factor\': 3};"'
+        //     }
+        // }
         stage('apply ingress production') {
             when {
                 expression { params.ACTION == 'create-prod' }
