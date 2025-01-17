@@ -78,7 +78,7 @@ pipeline {
         }
         stage('Terraform Init Staging') {
             when {
-                expression { params.ACTION == 'create-staging' }
+                expression { params.ACTION == 'create-staging' || params.ACTION == 'destroy-staging' }
             }
             steps {
                 dir("staging") {

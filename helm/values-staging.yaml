@@ -8,6 +8,11 @@ ingress:
           service:
             name: api-gateway-service
             port: 8080
+        - path: /cave
+          pathType: Prefix
+          service:
+            name: cave-service
+            port: 8080
     - host: dkkom.com
       paths:
         - path: /
