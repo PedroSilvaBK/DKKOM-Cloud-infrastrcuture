@@ -76,51 +76,51 @@ pipeline {
                 }
             }
         }
-        // stage('Terraform Init Staging') {
-        //     when {
-        //         expression { params.ACTION == 'create-staging' }
-        //     }
-        //     steps {
-        //         dir("staging") {
-        //             echo 'Initializing Terraform for Staging'
-        //             sh 'terraform init -reconfigure'
-        //         }
-        //     }
-        // }
-        // stage('Terraform Plan Staging') {
-        //     when {
-        //         expression { params.ACTION == 'create-staging' }
-        //     }
-        //     steps {
-        //         dir("staging") {
-        //             echo 'Planning Terraform for Staging'
-        //             sh 'terraform plan'
-        //         }
-        //     }
-        // }
-        // stage('Terraform Apply Staging') {
-        //     when {
-        //         expression { params.ACTION == 'create-staging' }
-        //     }
-        //     steps {
-        //         dir('staging') {
-        //             echo 'Applying Terraform'
-        //             sh 'terraform apply -auto-approve'
+        stage('Terraform Init Staging') {
+            when {
+                expression { params.ACTION == 'create-staging' }
+            }
+            steps {
+                dir("staging") {
+                    echo 'Initializing Terraform for Staging'
+                    sh 'terraform init -reconfigure'
+                }
+            }
+        }
+        stage('Terraform Plan Staging') {
+            when {
+                expression { params.ACTION == 'create-staging' }
+            }
+            steps {
+                dir("staging") {
+                    echo 'Planning Terraform for Staging'
+                    sh 'terraform plan'
+                }
+            }
+        }
+        stage('Terraform Apply Staging') {
+            when {
+                expression { params.ACTION == 'create-staging' }
+            }
+            steps {
+                dir('staging') {
+                    echo 'Applying Terraform'
+                    sh 'terraform apply -auto-approve'
 
-        //             // Capture Terraform outputs
-        //             script {
-        //                 def sqlInstanceIP = sh(script: 'terraform output -raw sql_instance_ip', returnStdout: true).trim()
-        //                 def redisIP = sh(script: 'terraform output -raw redis_ip', returnStdout: true).trim()
-        //                 def sqlIntanceReplicaIP = sh(script: 'terraform output -raw sql_instance_ip_replica', returnStdout: true).trim()
+                    // Capture Terraform outputs
+                    script {
+                        def sqlInstanceIP = sh(script: 'terraform output -raw sql_instance_ip', returnStdout: true).trim()
+                        def redisIP = sh(script: 'terraform output -raw redis_ip', returnStdout: true).trim()
+                        def sqlIntanceReplicaIP = sh(script: 'terraform output -raw sql_instance_ip_replica', returnStdout: true).trim()
 
-        //                 // Set environment variables for Kubernetes secrets creation
-        //                 env.SQL_INSTANCE_IP = sqlInstanceIP
-        //                 env.SQL_INSTANCE_REPLICA_IP = sqlIntanceReplicaIP
-        //                 env.REDIS_IP = redisIP
-        //             }
-        //         }
-        //     }
-        // }
+                        // Set environment variables for Kubernetes secrets creation
+                        env.SQL_INSTANCE_IP = sqlInstanceIP
+                        env.SQL_INSTANCE_REPLICA_IP = sqlIntanceReplicaIP
+                        env.REDIS_IP = redisIP
+                    }
+                }
+            }
+        }
         stage('Terraform Destroy Staging') {
             when {
                 expression { params.ACTION == 'destroy-staging' }
