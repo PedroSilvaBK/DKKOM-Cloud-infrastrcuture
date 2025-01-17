@@ -13,6 +13,11 @@ ingress:
           service:
             name: cave-service
             port: 8080
+        - path: /message
+          pathType: Prefix
+          service:
+            name: message-service
+            port: 8080
     - host: dkkom.com
       paths:
         - path: /
