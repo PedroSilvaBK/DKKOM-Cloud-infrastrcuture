@@ -22,7 +22,7 @@ pipeline {
         }
         stage('Terraform Init Production') {
             when {
-                expression { params.ACTION == 'create-prod' }
+                expression { params.ACTION == 'create-prod' || params.ACTION == 'destroy-prod' }
             }
             steps {
                 dir("production") {
