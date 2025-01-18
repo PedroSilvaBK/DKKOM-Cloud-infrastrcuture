@@ -78,6 +78,9 @@ pipeline {
             when {
                 expression { params.ACTION == 'destroy-prod' }
             }
+            environment {
+                TF_VAR_db_password = credentials('MYSQL_DATABASE_PASSWORD')
+            }
             steps {
                 dir('production') {
                     echo 'Destroying Terraform for production'

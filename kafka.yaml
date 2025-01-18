@@ -35,6 +35,9 @@ spec:
         env:
         - name: ALLOW_ANONYMOUS_LOGIN
           value: "yes"
+        securityContext:
+          allowPrivilegeEscalation: false
+          runAsNonRoot: true
 
 ---
 
@@ -74,6 +77,10 @@ spec:
         volumeMounts:
         - name: kafka-data
           mountPath: /tmp/kafka
+        securityContext:
+          allowPrivilegeEscalation: false
+          runAsNonRoot: true
+
   volumeClaimTemplates:
   - metadata:
       name: kafka-data

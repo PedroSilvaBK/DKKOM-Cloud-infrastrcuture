@@ -39,6 +39,9 @@ spec:
         # If using a service account JSON:
         - name: GOOGLE_APPLICATION_CREDENTIALS
           value: /etc/otelcol/creds/cloud-trace-key.json
+        securityContext:
+          allowPrivilegeEscalation: false
+          runAsNonRoot: true
       volumes:
       - name: config-vol
         configMap:
