@@ -10,46 +10,46 @@ provider "google" {
   region  = "europe-west1"
 }
 
-# resource "google_compute_instance" "performance_test_vm" {
-#   name         = "performance-test-vm"
-#   machine_type = "e2-standard-2" # Adjust based on your load requirements
-#   zone         = "europe-west4-b" # Same zone as your cluster for reduced latency
+resource "google_compute_instance" "performance_test_vm" {
+  name         = "performance-test-vm"
+  machine_type = "e2-standard-2" # Adjust based on your load requirements
+  zone         = "europe-west4-b" # Same zone as your cluster for reduced latency
 
-#   boot_disk {
-#     initialize_params {
-#       image = "projects/debian-cloud/global/images/family/debian-11" # Debian OS
-#       size  = 20
-#       type  = "pd-balanced"
-#     }
-#   }
+  boot_disk {
+    initialize_params {
+      image = "projects/debian-cloud/global/images/family/debian-11" # Debian OS
+      size  = 20
+      type  = "pd-balanced"
+    }
+  }
 
-#   network_interface {
-#     network = "default"
-#   }
+  network_interface {
+    network = "default"
+  }
 
-#   metadata_startup_script = <<-EOT
-#     #!/bin/bash
-#     apt-get update
-#     apt-get install -y wget curl git build-essential
-#     # Install any additional dependencies here (e.g., k6, Locust)
-#     gpg -k
-#     gpg --no-default-keyring --keyring /usr/share/keyrings/k6-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69
-#     echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
-#     apt-get update
-#     apt-get install k6
-#   EOT
+  metadata_startup_script = <<-EOT
+    #!/bin/bash
+    apt-get update
+    apt-get install -y wget curl git build-essential
+    # Install any additional dependencies here (e.g., k6, Locust)
+    gpg -k
+    gpg --no-default-keyring --keyring /usr/share/keyrings/k6-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69
+    echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
+    apt-get update
+    apt-get install k6
+  EOT
 
-#   tags = ["performance-test"]
+  tags = ["performance-test"]
 
-#   service_account {
-#     email  = "default"
-#     scopes = [
-#       "https://www.googleapis.com/auth/cloud-platform"
-#     ]
-#   }
+  service_account {
+    email  = "default"
+    scopes = [
+      "https://www.googleapis.com/auth/cloud-platform"
+    ]
+  }
 
-#   depends_on = [google_container_cluster.dcom_cluster]
-# }
+  depends_on = [google_container_cluster.dcom_cluster]
+}
 
 # # Optional: Create a firewall rule to allow SSH access to the test VM
 # resource "google_compute_firewall" "allow_ssh" {
@@ -168,8 +168,7 @@ resource "google_container_node_pool" "default_node_pool" {
   node_count = 3
 
   node_config {
-    # machine_type = "e2-standard-2"
-    machine_type = "n1-standard-4"
+    machine_type = "e2-standard-2"
     disk_type    = "pd-balanced"
     disk_size_gb = 20
     image_type   = "COS_CONTAINERD"
