@@ -24,6 +24,9 @@ pipeline {
             when {
                 expression { params.ACTION == 'create-prod' || params.ACTION == 'destroy-prod' }
             }
+            environment {
+                TF_VAR_db_password = credentials('MYSQL_DATABASE_PASSWORD')
+            }
             steps {
                 dir("production") {
                     echo 'Initializing Terraform for production'
@@ -35,6 +38,9 @@ pipeline {
             when {
                 expression { params.ACTION == 'create-prod' }
             }
+            environment {
+                TF_VAR_db_password = credentials('MYSQL_DATABASE_PASSWORD')
+            }
             steps {
                 dir("production") {
                     echo 'Planning Terraform for production'
@@ -45,6 +51,9 @@ pipeline {
         stage('Terraform Apply Production') {
             when {
                 expression { params.ACTION == 'create-prod' }
+            }
+            environment {
+                TF_VAR_db_password = credentials('MYSQL_DATABASE_PASSWORD')
             }
             steps {
                 dir('production') {
@@ -77,6 +86,9 @@ pipeline {
             }
         }
         stage('Terraform Init Staging') {
+            environment {
+                TF_VAR_db_password = credentials('MYSQL_DATABASE_PASSWORD')
+            }
             when {
                 expression { params.ACTION == 'create-staging' || params.ACTION == 'destroy-staging' }
             }
@@ -91,6 +103,9 @@ pipeline {
             when {
                 expression { params.ACTION == 'create-staging' }
             }
+            environment {
+                TF_VAR_db_password = credentials('MYSQL_DATABASE_PASSWORD')
+            }
             steps {
                 dir("staging") {
                     echo 'Planning Terraform for Staging'
@@ -101,6 +116,9 @@ pipeline {
         stage('Terraform Apply Staging') {
             when {
                 expression { params.ACTION == 'create-staging' }
+            }
+            environment {
+                TF_VAR_db_password = credentials('MYSQL_DATABASE_PASSWORD')
             }
             steps {
                 dir('staging') {
@@ -237,6 +255,10 @@ pipeline {
             when {
                 expression { params.ACTION == 'create-prod' || params.ACTION == 'create-staging' }
             }
+            environment {
+                MYSQL_PASSWORD = credentials('MYSQL_DATABASE_PASSWORD')
+                TURN_SERVER_PASSWORD = credentials('TURN_SERVER_PASSWORD')
+            }
             steps {
                 sh '''
                     kubectl create secret generic database-ip \
@@ -250,7 +272,15 @@ pipeline {
                     kubectl create secret generic redis-ip \
                         --from-literal=REDIS_IP=${REDIS_IP}
                 '''
-                sh  'kubectl apply -f app-secrets.yaml'
+                sh '''
+                    kubectl create secret generic mysql-password \
+                        --from-literal=MYSQL_PASSWORD=${MYSQL_PASSWORD}
+                '''
+                sh '''
+                    kubectl create secret generic turn-server-password \
+                        --from-literal=TURN_SERVER_PASSWORD=${TURN_SERVER_PASSWORD}
+                '''
+                sh 'kubectl apply -f app-secrets.yaml'
                 sh 'kubectl create secret generic google-client-secret --from-literal=GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}'
             }
         }

@@ -214,7 +214,7 @@ resource "google_sql_database" "additional_databases" {
 resource "google_sql_user" "root" {
   instance   = google_sql_database_instance.default.name
   name       = "root"
-  password   = "admin" # Replace with your actual password
+  password   = var.db_password # Replace with your actual password
   host       = "%"
 
   depends_on = [ google_sql_database_instance.default ]
