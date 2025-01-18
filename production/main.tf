@@ -77,8 +77,8 @@ resource "google_container_cluster" "dcom_cluster" {
 
   # Security posture and features
   security_posture_config {
-    mode = "BASIC"
-    vulnerability_mode = "VULNERABILITY_BASIC"
+    mode = "ENTERPRISE"
+    vulnerability_mode = "VULNERABILITY_ENTERPRISE"
   }
   enable_shielded_nodes = true
 
