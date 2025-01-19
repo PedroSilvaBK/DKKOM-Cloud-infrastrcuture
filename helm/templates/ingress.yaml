@@ -3,12 +3,12 @@ kind: Ingress
 metadata:
   name: microservices-ingress
   annotations:
-    kubernetes.io/ingress.class: nginx
     {{- if .Values.ingress.forceSSL }}
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     {{- end }}
 spec:
+  ingressClassName: nginx
   rules:
   {{- range .Values.ingress.rules }}
   - host: {{ .host }}
@@ -24,3 +24,29 @@ spec:
               number: {{ .service.port }}
       {{- end }}
   {{- end }}
+
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-ingress-controller
+  namespace: ingress-nginx
+  annotations:
+    cloud.google.com/load-balancer-type: "External"
+spec:
+  type: LoadBalancer
+  loadBalancerIP: 34.22.243.163  # Your reserved static IP
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+      protocol: TCP
+    - name: https
+      port: 443
+      targetPort: 443
+      protocol: TCP
+  selector:
+    app.kubernetes.io/name: ingress-nginx
+
